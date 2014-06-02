@@ -4,7 +4,7 @@
 -- Spells only work if you use they by hotkey.
 -- Right click on friendly hero - follow him, on enemy - attack him.
 -- Use config for change hotkeys and size and position top bar for your monitor size.
--- (not good works on Invoker, Rubick and Doom D and E hotkeys and brewmaster ulti)
+-- (not good works on Invoker, Rubick and Doom D and E hotkeys and Brewmaster ulti)
 
 require("libs.spelltype")
 ----------config------------
