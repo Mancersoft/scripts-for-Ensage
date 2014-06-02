@@ -235,7 +235,7 @@ list = {
 	keeper_of_the_light_blinding_light = { target = "area", number = 6 }, -- 5
 --	keeper_of_the_light_spirit_form, -- 6
 --	keeper_of_the_light_illuminate_end, -- 7
---	keeper_of_the_light_spirit_form_illuminate, -- 8
+	keeper_of_the_light_spirit_form_illuminate = { target = "area", number = 1 }, -- 8
 --	keeper_of_the_light_spirit_form_illuminate_end, -- 9
 
 	kunkka_torrent = { target = "area", number = 1 }, -- 1
