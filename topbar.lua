@@ -1,5 +1,5 @@
 -- Made by Staskkk.
--- This script allows you use your hero spells and attack or follow on icons of heroes in top bar.
+-- This script allows you use spells and attack or follow on icons of heroes in top bar.
 -- Target spells affect on heroes, area spells affect on heroes positions.
 -- Spells only work if you use they by hotkey.
 -- Right click on friendly hero - follow him, on enemy - attack him.
