@@ -48,12 +48,10 @@ code == Spells[3] or code == Spells[4] or code == Spells[5] or code == Spells[6]
 	if heroes and msg == RBUTTON_UP or msg == LBUTTON_UP then
 
 		for i,v in ipairs(heroes) do
-			selftop = 0
-			if v.team ~= sel.team then
+			if v.team == 3 then
 				selftop = centwidth
-				if v.team == 2 then
-					selftop = -1*selftop
-				end
+			else
+				selftop = 0
 			end
 
 			if IsMouseOnButton(xx+v.playerId*ww+selftop,yy,hh,ww) then
@@ -121,12 +119,10 @@ function Tick(tick)
 	heroes = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
 	for i,v in ipairs(heroes) do
 		if not panel[v.playerId] then
-			selftop = 0
-			if v.team ~= sel.team then
+			if v.team == 3 then
 				selftop = centwidth
-				if v.team == 2 then
-					selftop = -1*selftop
-				end
+			else
+				selftop = 0
 			end
 			panel[v.playerId] = drawMgr:CreateRect(xx+v.playerId*ww+selftop,yy,ww,hh,0x5050ffff,true)
 			panel[v.playerId].visible = true
