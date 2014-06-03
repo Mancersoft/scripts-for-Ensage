@@ -26,7 +26,6 @@ selected = false
 panel = {}
 heroes = {}
 init = false
-registered = false
 sleeptick = 0
 
 function Key(msg,code)
@@ -38,7 +37,7 @@ function Key(msg,code)
 
 	if not client.chat and msg == KEY_UP and code == Spells[1] or code == Spells[2] or 
 code == Spells[3] or code == Spells[4] or code == Spells[5] or code == Spells[6] then
-		for i,v in ipairs(me.abilities) do
+		for i,v in ipairs(sel.abilities) do
 			if list[v.name] and code == Spells[list[v.name].number] and v.state == LuaEntityAbility.STATE_READY then
 				Skill = v
 				using = true
@@ -50,7 +49,7 @@ code == Spells[3] or code == Spells[4] or code == Spells[5] or code == Spells[6]
 
 		for i,v in ipairs(heroes) do
 			selftop = 0
-			if v.team ~= me.team then
+			if v.team ~= sel.team then
 				selftop = centwidth
 				if v.team == 2 then
 					selftop = -1*selftop
@@ -60,18 +59,18 @@ code == Spells[3] or code == Spells[4] or code == Spells[5] or code == Spells[6]
 			if IsMouseOnButton(xx+v.playerId*ww+selftop,yy,hh,ww) then
 
 				if msg == RBUTTON_UP then
-					if v.team == me.team then
+					if v.team == sel.team then
 						if IsKeyDown(16) then
-							me:Follow(v,true)
+							sel:Follow(v,true)
 						else
-							me:Follow(v)
+							sel:Follow(v)
 						end
-						if v ~= me then selected = true end
+						if v ~= sel then selected = true end
 					else
 						if IsKeyDown(16) then
-							me:Attack(v,true)
+							sel:Attack(v,true)
 						else
-							me:Attack(v)
+							sel:Attack(v)
 						end
 					end
 				end
@@ -79,20 +78,20 @@ code == Spells[3] or code == Spells[4] or code == Spells[5] or code == Spells[6]
 				if msg == LBUTTON_UP and Skill and using then
 					if list[Skill.name].target == "target" then
 						if IsKeyDown(16) then
-							me:SafeCastAbility(Skill,v,true)
+							sel:SafeCastAbility(Skill,v,true)
 						else
-							me:SafeCastAbility(Skill,v)
+							sel:SafeCastAbility(Skill,v)
 						end
 					using = false
 					elseif v.visible then
 						if IsKeyDown(16) then
-							me:SafeCastAbility(Skill,v.position,true)
+							sel:SafeCastAbility(Skill,v.position,true)
 						else
-							me:SafeCastAbility(Skill,v.position)
+							sel:SafeCastAbility(Skill,v.position)
 						end
 					using = false
 					end
-					if v ~= me and v.team == me.team then selected = true end
+					if v ~= sel and v.team == sel.team then selected = true end
 				end
 
 			end
@@ -108,21 +107,22 @@ function IsMouseOnButton(x,y,h,w)
 end
 
 function Tick(tick)
-	if not client.connected or client.loading or client.console or tick < sleeptick then return end
+	if not client.connected or client.loading or client.console or tick < sleeptick  or not entityList:GetMyHero() then
+		return
+	end
 	sleeptick = tick + 200
 
 	if not init then
 		mp = entityList:GetMyPlayer()
-		me = entityList:GetMyHero()
-		if not me then return end
+		if not mp.selection[1] then return end
 		init = true
 	end
-
+	sel = mp.selection[1]
 	heroes = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
 	for i,v in ipairs(heroes) do
 		if not panel[v.playerId] then
 			selftop = 0
-			if v.team ~= me.team then
+			if v.team ~= sel.team then
 				selftop = centwidth
 				if v.team == 2 then
 					selftop = -1*selftop
@@ -143,7 +143,7 @@ function Tick(tick)
 	end
 
 	if selected then
-		mp:Select(me)
+		mp:Select(sel)
 		selected = false
 	end
 
@@ -156,20 +156,9 @@ function Close()
 	using = false
 	selected = false
 	init = false
-	registered = false
 	collectgarbage("collect")
 end
 
-function Load()
-	if registered then return end
-	registered = true
-end
-
-script:RegisterEvent(EVENT_LOAD,Load)
 script:RegisterEvent(EVENT_CLOSE,Close)
 script:RegisterEvent(EVENT_KEY,Key)
 script:RegisterEvent(EVENT_TICK,Tick)
-
-if client.connected and not client.loading then
-	Load()
-end
