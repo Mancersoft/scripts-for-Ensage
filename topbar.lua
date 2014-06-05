@@ -1,7 +1,8 @@
 -- Made by Staskkk.
 -- This script allows you use spells and attack or follow on icons of heroes in top bar.
+-- All spells works only if you see target, but target spells lead you to the enemy.
 -- Target spells affect on heroes, area spells affect on heroes positions.
--- Spells only work if you use they by hotkey.
+-- Spells only work if you use they by hotkeys.
 -- Right click on friendly hero - follow him, on enemy - attack him.
 -- Use config for change hotkeys and size and position top bar for your monitor size.
 -- (not good works on Invoker, Rubick and Doom D and E hotkeys and Brewmaster ulti)
