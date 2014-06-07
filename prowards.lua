@@ -1,4 +1,5 @@
 -- Made by Staskkk.
+-- This script shows you professional (the best) positions for observer wards.
 -- Some wards shows for Radiant, some for Dire, some for both.
 -- Array of wards team: 1 = BOTH teams, 2 = Radiant, 3 = Dire. type = type of effect.
 -- type of wards: 1 = rune (red), 2 = extra (red), 3 = gank or def (red),
