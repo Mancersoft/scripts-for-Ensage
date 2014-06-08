@@ -98,7 +98,7 @@ function Tick(tick)
 			effects[i]:SetVector( 0, vec)
 		end
 	end
-	print("prowards registered!")
+	print("Prowards registered!")
 	script:UnregisterEvent(Tick)
 end
 
