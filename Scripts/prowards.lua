@@ -117,3 +117,7 @@ end
 
 script:RegisterEvent(EVENT_LOAD,Load)
 script:RegisterEvent(EVENT_CLOSE,Close)
+
+if client.connected and not client.loading then
+	Load()
+end
