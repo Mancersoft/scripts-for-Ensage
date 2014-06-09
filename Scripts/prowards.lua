@@ -1,7 +1,7 @@
 -- Made by Staskkk.
--- This script shows you professional (the best) positions for observer wards (on real map, not on minimap).
+-- This script shows you professional (the best) positions for observer wards.
 -- Some wards shows for Radiant, some for Dire, some for both.
--- Array of wards: team: 1 = BOTH teams, 2 = Radiant, 3 = Dire. Type = type of effect.
+-- Array of wards team: 1 = BOTH teams, 2 = Radiant, 3 = Dire. Type = type of effect.
 -- Type of wards: 1 = rune (red), 2 = extra (red), 3 = gank or def (red),
 -- 4 = wood (blue), 5 = push (blue), 6 = situational (blue).
 -- I don't have effects for each type,
@@ -79,12 +79,13 @@ wards = {
 	{ x = 5844, y = -5559, z = 256, team = 3, type = 6 } --62
 }
 effects = { }
+registered = false
 
 function Tick(tick)
-	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then
+	if not client.connected or client.loading then
 		return
 	end
-	me = entityList:GetMyHero()
+	me = entityList:GetMyPlayer()
 	for i = 1,#wards do
 		if wards[i].team == 1 or wards[i].team == me.team then
 			if wards[i].type == 1 then ef = "fire_camp_02" end
@@ -102,10 +103,17 @@ function Tick(tick)
 	script:UnregisterEvent(Tick)
 end
 
+function Load()
+	if registered then return end
+	script:RegisterEvent(EVENT_TICK,Tick)
+	registered = true
+end
+
 function Close()
 	effects = { }
 	collectgarbage("collect")
+	registered = false
 end
 
+script:RegisterEvent(EVENT_LOAD,Load)
 script:RegisterEvent(EVENT_CLOSE,Close)
-script:RegisterEvent(EVENT_TICK,Tick)
