@@ -8,13 +8,15 @@ string.byte("E"),
 string.byte("D"),
 string.byte("F"), -- with Shift
 string.byte("Q"),
-string.byte(" ")} 
+string.byte(" "),
+string.byte("F")} 
 
 -- Code
 registered = false
 init = false
 activated = false
 fount = {false,false,false,false,false}
+unreg = false
 sleeptick = 0
 --font = drawMgr:CreateFont("critfont","Arial",14,500)
 --defaultText = "Critscript: Disabled"
@@ -25,18 +27,16 @@ function Key(msg,code)
 	if msg == KEY_UP and code == hotkeys[6] then activated = not activated end
 	if activated then
 		if msg == KEY_UP then
+			if code == hotkeys[7] and not IsKeyDown(16) then
+				local sel = mh.selection[1]
+				if sel and sel.name == "npc_dota_hero_meepo" then
+					poofall(sel)
+				end
+			end
 			if code == hotkeys[1] or code == hotkeys[2] then
 				local sel = mh.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
-					local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
-					for i,v in ipairs(meepos) do
-						if v ~= sel then
-							local spell = v:GetAbility(2)
-							if spell.state == LuaEntityAbility.STATE_READY then
-								v:CastAbility(spell,sel)
-							end
-						end
-					end
+					poofall(sel)
 					if code == hotkeys[2] then
 						local spell = sel:GetAbility(2)
 						if spell.state == LuaEntityAbility.STATE_READY then
@@ -87,11 +87,24 @@ function Key(msg,code)
 	end
 end
 
+function poofall(sel)
+	local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+	for i,v in ipairs(meepos) do
+		if v ~= sel then
+			local spell = v:GetAbility(2)
+			if spell.state == LuaEntityAbility.STATE_READY then
+				v:CastAbility(spell,sel)
+			end
+		end
+	end
+end
+
 function Tick(tick)
 	if not client.connected or client.loading or client.console or not entityList:GetMyHero() or tick < sleeptick then
 		return
 	end
 	if entityList:GetMyHero().name ~= "npc_dota_hero_meepo" then
+		unreg = true
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 		return
@@ -140,10 +153,14 @@ function Load()
 end
 
 function Close()
+	if not unreg then
+		script:UnregisterEvent(Key)
+		script:UnregisterEvent(Tick)
+	end
 	init = false
 	activated = false
-	registered = false
 	collectgarbage("collect")
+	registered = false
 end
 
 script:RegisterEvent(EVENT_LOAD,Load)
