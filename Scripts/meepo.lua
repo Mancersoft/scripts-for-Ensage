@@ -30,19 +30,21 @@ function Key(msg,code)
 	if activated then
 		if msg == KEY_UP then
 			if code == hotkeys[7] and not IsKeyDown(16) then
-				local sel = mp.selection[1]
-				local spell = sel:FindItem("item_blink")
-				if sel and sel.name == "npc_dota_hero_meepo" and spell and spell.state == LuaEntityAbility.STATE_READY then
-					poofall(sel)
-					eff = Effect(sel, "range_display")
-					eff:SetVector( 1, Vector(1200,0,0) )
-					mouse = client.mousePosition
-					dot = Effect(mouse, "fire_torch")
-					dot:SetVector( 0, mouse)
-					seld = sel
-					dag = spell 
-					com = true
-					sleep = GetTick() + 1400
+				targ = entityList:GetMouseover()
+				if targ and targ.type == LuaEntity.TYPE_HERO and targ.team ~= mp.team then
+					local sel = mp.selection[1]
+					local spell = sel:FindItem("item_blink")
+					if sel and sel.name == "npc_dota_hero_meepo" and spell and spell.state == LuaEntityAbility.STATE_READY then
+						poofall(sel)
+						eff = Effect(sel, "range_display")
+						eff:SetVector( 1, Vector(1200,0,0) )
+						dot = Effect(targ, "urn_of_shadows_damage")
+						dot:SetVector( 1, Vector(0,0,0))
+						seld = sel
+						dag = spell
+						sleep = GetTick() + 1400
+						com = true
+					end
 				end
 			end
 			if code == hotkeys[1] or code == hotkeys[2] then
@@ -119,14 +121,14 @@ function Tick(tick)
 		com = false
 		eff = nil
 		dot = nil
-		seld:CastAbility(dag, mouse)
+		seld:CastAbility(dag, targ.position)
 		spell = seld:GetAbility(1)
 		if spell and spell.state == LuaEntityAbility.STATE_READY then
-			seld:CastAbility(spell, mouse,true)
+			seld:CastAbility(spell, targ.position,true)
 		end
 		spell = seld:GetAbility(2)
 		if spell and spell.state == LuaEntityAbility.STATE_READY then
-			seld:CastAbility(spell, mouse,true)
+			seld:CastAbility(spell, targ.position,true)
 		end
 	end
 	if tick < sleeptick then return end
