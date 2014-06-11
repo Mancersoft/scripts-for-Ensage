@@ -17,7 +17,9 @@ init = false
 activated = false
 fount = {false,false,false,false,false}
 unreg = false
+com = false
 sleeptick = 0
+sleep = 0
 --font = drawMgr:CreateFont("critfont","Arial",14,500)
 --defaultText = "Critscript: Disabled"
 --text = drawMgr:CreateText(x,y,-1,defaultText,font)
@@ -28,13 +30,23 @@ function Key(msg,code)
 	if activated then
 		if msg == KEY_UP then
 			if code == hotkeys[7] and not IsKeyDown(16) then
-				local sel = mh.selection[1]
-				if sel and sel.name == "npc_dota_hero_meepo" then
+				local sel = mp.selection[1]
+				local spell = sel:FindItem("item_blink")
+				if sel and sel.name == "npc_dota_hero_meepo" and spell and spell.state == LuaEntityAbility.STATE_READY then
 					poofall(sel)
+					eff = Effect(sel, "range_display")
+					eff:SetVector( 1, Vector(1200,0,0) )
+					mouse = client.mousePosition
+					dot = Effect(mouse, "fire_torch")
+					dot:SetVector( 0, mouse)
+					seld = sel
+					dag = spell 
+					com = true
+					sleep = GetTick() + 1400
 				end
 			end
 			if code == hotkeys[1] or code == hotkeys[2] then
-				local sel = mh.selection[1]
+				local sel = mp.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
 					poofall(sel)
 					if code == hotkeys[2] then
@@ -46,7 +58,7 @@ function Key(msg,code)
 				end
 			end
 			if code == hotkeys[3] then
-				local sel = mh.selection[1]
+				local sel = mp.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
 					local spell = sel:GetAbility(2)
 					if spell.state == LuaEntityAbility.STATE_READY then
@@ -60,7 +72,7 @@ function Key(msg,code)
 			end
 			if code == hotkeys[4] and IsKeyDown(16) then
 				local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
-				if mh.team == LuaEntity.TEAM_RADIANT then
+				if mp.team == LuaEntity.TEAM_RADIANT then
 					if meepos[1] then meepos[1]:AttackMove(Vector(-991,-4183,127)) end
 					if meepos[2] then meepos[2]:AttackMove(Vector(-389,-2958,127)) end
 					if meepos[3] then meepos[3]:AttackMove(Vector(1602,-3780,256)) end
@@ -76,7 +88,7 @@ function Key(msg,code)
 			end
 		end
 		if msg == KEY_DOWN and code == hotkeys[5] and target then
-			local sel = mh.selection[1]
+			local sel = mp.selection[1]
 			if sel and sel.name == "npc_dota_hero_meepo" then
 				local spell = sel:GetAbility(1)
 				if spell.state == LuaEntityAbility.STATE_READY then
@@ -100,9 +112,24 @@ function poofall(sel)
 end
 
 function Tick(tick)
-	if not client.connected or client.loading or client.console or not entityList:GetMyHero() or tick < sleeptick then
+	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then
 		return
 	end
+	if com and tick >= sleep then
+		com = false
+		eff = nil
+		dot = nil
+		seld:CastAbility(dag, mouse)
+		spell = seld:GetAbility(1)
+		if spell and spell.state == LuaEntityAbility.STATE_READY then
+			seld:CastAbility(spell, mouse,true)
+		end
+		spell = seld:GetAbility(2)
+		if spell and spell.state == LuaEntityAbility.STATE_READY then
+			seld:CastAbility(spell, mouse,true)
+		end
+	end
+	if tick < sleeptick then return end
 	if entityList:GetMyHero().name ~= "npc_dota_hero_meepo" then
 		unreg = true
 		script:UnregisterEvent(Key)
@@ -111,18 +138,18 @@ function Tick(tick)
 	end
 	sleeptick = tick + 200
 	if not init then
-		mh = entityList:GetMyPlayer()
+		mp = entityList:GetMyPlayer()
 		init = true
 	end
 	local cur = entityList:GetMouseover()
-	if cur and cur.type == LuaEntity.TYPE_HERO and cur.team ~= mh.team then
+	if cur and cur.type == LuaEntity.TYPE_HERO and cur.team ~= mp.team then
 		target = cur
 	end
 	if activated then
 		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 		for i,v in ipairs(meepos) do
 			if not fount[i] and v.health/v.maxHealth < hpPercent then
-				mh:Unselect(v)
+				mp:Unselect(v)
 				if v.team == LuaEntity.TEAM_RADIANT then
 					v:Move(Vector(-7272,-6757,270))
 				else
@@ -131,12 +158,12 @@ function Tick(tick)
 				fount[i] = true
 			end
 			if fount[i] and v.health == v.maxHealth then
-				local sel = mh.selection[1]
+				local sel = mp.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
 					local spell = v:GetAbility(2)
 					if spell.state == LuaEntityAbility.STATE_READY then
 						v:CastAbility(spell,sel)
-						mh:SelectAdd(v)
+						mp:SelectAdd(v)
 						fount[i] = false
 					end
 				end
@@ -157,8 +184,6 @@ function Close()
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 	end
-	init = false
-	activated = false
 	collectgarbage("collect")
 	registered = false
 end
