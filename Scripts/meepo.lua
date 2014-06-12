@@ -21,7 +21,7 @@ activated = false
 fount = {false,false,false,false,false}
 unreg = false
 com = false
-sleep = {0, 0, 0}
+sleep = {0, 0, 0, 0}
 --font = drawMgr:CreateFont("critfont","Arial",14,500)
 --defaultText = "Critscript: Disabled"
 --text = drawMgr:CreateText(x,y,-1,defaultText,font)
@@ -98,9 +98,9 @@ function Key(msg,code)
 				end
 			end
 		end
-		if msg == KEY_DOWN and code == hotkeys[5] and mp.target and (sleep[3] <= GetTick() and mp.target == target or mp.target ~= target) then
+		if msg == KEY_DOWN and code == hotkeys[5] and target and (sleep[3] <= GetTick() and target == targe or target ~= targe) then
 			local throw = true
-			target = mp.target
+			targe = target
 			for i,v in ipairs(target.modifiers) do
 				if v.name == "modifier_meepo_earthbind" and v.remainingTime > 0.5 then 
 					throw = false
@@ -112,8 +112,8 @@ function Key(msg,code)
 					local spell = v:GetAbility(1)
 					if throw and spell.state == LuaEntityAbility.STATE_READY and math.sqrt((target.position.x-v.position.x)^2+(target.position.y-v.position.y)^2) <= spell.castRange then
 						v:CastAbility(spell,target.position)
-						v:Attack(target)
-						sleep[3] = GetTick() + 2000
+						v:Attack(target,true)
+						sleep[3] = GetTick() + 500
 						throw = false
 					end
 				end
@@ -129,7 +129,10 @@ function poofall(sel)
 			local spell = v:GetAbility(2)
 			if spell.state == LuaEntityAbility.STATE_READY then
 				v:CastAbility(spell,sel)
-				--mp:SelectAdd(v)
+				skill = spell
+				n = 0
+				sele = true
+				sleep[4] = GetTick() + 1500
 			end
 		end
 	end
@@ -144,6 +147,9 @@ function Tick(tick)
 		eff = nil
 		dot = nil
 		seld:CastAbility(dag, targ.position)
+		n = 0
+		sele = true
+		sleep[4] = tick + 100
 		spell = seld:GetAbility(1)
 		if spell and spell.state == LuaEntityAbility.STATE_READY then
 			seld:CastAbility(spell, targ.position,true)
@@ -167,6 +173,21 @@ function Tick(tick)
 		init = true
 	end
 	if activated then
+		local ent = entityList:GetMouseover()
+		if ent and ent.type == LuaEntity.TYPE_HERO and ent.team ~= mp.team then
+			target = ent
+		end
+		if sele and tick > sleep[4] then
+		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+			if n == 0 then
+				for i,v in ipairs(meepos) do
+					mp:SelectAdd(v)
+				end
+			else
+				mp:SelectAdd(meepos[n])
+			end
+			sele = false
+		end
 		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 		for i,v in ipairs(meepos) do
 			if not fount[i] and v.health/v.maxHealth < hpPercent then
@@ -184,11 +205,9 @@ function Tick(tick)
 					local spell = v:GetAbility(2)
 					if spell.state == LuaEntityAbility.STATE_READY then
 						v:CastAbility(spell,sel)
-						if v.illusion then
-							mp:SelectAdd(v)
-						else
-							mp:Select(v)
-						end
+						sleep[4] = tick + 1500
+						n = i
+						sele = true
 						fount[i] = false
 					end
 				end
