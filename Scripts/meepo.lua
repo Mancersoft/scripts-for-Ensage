@@ -1,6 +1,8 @@
 -- Made by Staskkk.
 
 -- Config
+x = 50
+y = 30
 hpPercent = 0.50
 hotkeys = {
 string.byte("R"),
@@ -12,21 +14,28 @@ string.byte(" "),
 string.byte("F")} 
 
 -- Code
+font = drawMgr:CreateFont("meepofont","Arial",14,500)
 registered = false
 init = false
 activated = false
 fount = {false,false,false,false,false}
 unreg = false
 com = false
-sleeptick = 0
-sleep = 0
+sleep = {0, 0, 0}
 --font = drawMgr:CreateFont("critfont","Arial",14,500)
 --defaultText = "Critscript: Disabled"
 --text = drawMgr:CreateText(x,y,-1,defaultText,font)
 
 function Key(msg,code)
 	if client.console or client.chat or not init then return end
-	if msg == KEY_UP and code == hotkeys[6] then activated = not activated end
+	if msg == KEY_UP and code == hotkeys[6] then
+		activated = not activated 
+		if activated then
+			text.text = "Meepo script: ACTIVE"
+		else
+			text.text = "Meepo script: NOT ACTIVE"
+		end
+	end
 	if activated then
 		if msg == KEY_UP then
 			if code == hotkeys[7] and not IsKeyDown(16) then
@@ -38,11 +47,11 @@ function Key(msg,code)
 						poofall(sel)
 						eff = Effect(sel, "range_display")
 						eff:SetVector( 1, Vector(1200,0,0) )
-						dot = Effect(targ, "urn_of_shadows_damage")
+						dot = Effect(targ, "urn_of_shadows")
 						dot:SetVector( 1, Vector(0,0,0))
 						seld = sel
 						dag = spell
-						sleep = GetTick() + 1400
+						sleep[2] = GetTick() + 1400
 						com = true
 					end
 				end
@@ -89,12 +98,24 @@ function Key(msg,code)
 				end
 			end
 		end
-		if msg == KEY_DOWN and code == hotkeys[5] and target then
-			local sel = mp.selection[1]
-			if sel and sel.name == "npc_dota_hero_meepo" then
-				local spell = sel:GetAbility(1)
-				if spell.state == LuaEntityAbility.STATE_READY then
-					sel:CastAbility(spell,target.position)
+		if msg == KEY_DOWN and code == hotkeys[5] and mp.target and (sleep[3] <= GetTick() and mp.target == target or mp.target ~= target) then
+			local throw = true
+			target = mp.target
+			for i,v in ipairs(target.modifiers) do
+				if v.name == "modifier_meepo_earthbind" and v.remainingTime > 0.5 then 
+					throw = false
+				end
+			end
+			if throw then
+				local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+				for i,v in ipairs(meepos) do 
+					local spell = v:GetAbility(1)
+					if throw and spell.state == LuaEntityAbility.STATE_READY and math.sqrt((target.position.x-v.position.x)^2+(target.position.y-v.position.y)^2) <= spell.castRange then
+						v:CastAbility(spell,target.position)
+						v:Attack(target)
+						sleep[3] = GetTick() + 2000
+						throw = false
+					end
 				end
 			end
 		end
@@ -117,7 +138,7 @@ function Tick(tick)
 	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then
 		return
 	end
-	if com and tick >= sleep then
+	if com and tick > sleep[2] then
 		com = false
 		eff = nil
 		dot = nil
@@ -131,21 +152,18 @@ function Tick(tick)
 			seld:CastAbility(spell, targ.position,true)
 		end
 	end
-	if tick < sleeptick then return end
+	if tick <= sleep[1] then return end
 	if entityList:GetMyHero().name ~= "npc_dota_hero_meepo" then
 		unreg = true
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 		return
 	end
-	sleeptick = tick + 200
+	sleep[1] = tick + 200
 	if not init then
+		text = drawMgr:CreateText(x,y,-1,"Meepo script: NOT ACTIVE",font)
 		mp = entityList:GetMyPlayer()
 		init = true
-	end
-	local cur = entityList:GetMouseover()
-	if cur and cur.type == LuaEntity.TYPE_HERO and cur.team ~= mp.team then
-		target = cur
 	end
 	if activated then
 		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
@@ -165,7 +183,11 @@ function Tick(tick)
 					local spell = v:GetAbility(2)
 					if spell.state == LuaEntityAbility.STATE_READY then
 						v:CastAbility(spell,sel)
-						mp:SelectAdd(v)
+						if v.illusion then
+							mp:SelectAdd(v)
+						else
+							mp:Select(v)
+						end
 						fount[i] = false
 					end
 				end
@@ -186,6 +208,7 @@ function Close()
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 	end
+	text.visible = false
 	collectgarbage("collect")
 	registered = false
 end
