@@ -129,6 +129,7 @@ function poofall(sel)
 			local spell = v:GetAbility(2)
 			if spell.state == LuaEntityAbility.STATE_READY then
 				v:CastAbility(spell,sel)
+				--mp:SelectAdd(v)
 			end
 		end
 	end
@@ -208,7 +209,7 @@ function Close()
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 	end
-	text.visible = false
+	if text then text.visible = false end
 	collectgarbage("collect")
 	registered = false
 end
