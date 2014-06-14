@@ -66,6 +66,7 @@ function Key(msg,code)
 			end
 			if code == hotkeys[8] and com then
 				sleep[2] = 0
+				sele = false
 				com = false
 				eff = nil
 				dot = nil
@@ -166,8 +167,6 @@ function Tick(tick)
 			seld:CastAbility(dag, targ.position)
 		end
 		n = 0
-		sele = true
-		sleep[4] = tick + 100
 		spell = seld:GetAbility(1)
 		if spell and spell.state == LuaEntityAbility.STATE_READY then
 			if nota ~= 0 then
