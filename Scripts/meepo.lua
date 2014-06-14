@@ -12,7 +12,9 @@ string.byte("F"), -- with Shift
 string.byte("Q"),
 string.byte(" "),
 string.byte("F"),
-string.byte("S")} 
+string.byte("S"),
+219,
+221} 
 
 -- Code
 font = drawMgr:CreateFont("meepofont","Arial",14,500)
@@ -29,13 +31,21 @@ function Key(msg,code)
 	if msg == KEY_UP and code == hotkeys[6] then
 		activated = not activated 
 		if activated then
-			text.text = "Meepo script: ACTIVE"
+			text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
 		else
 			text.text = "Meepo script: NOT ACTIVE"
 		end
 	end
 	if activated then
 		if msg == KEY_UP then
+			if code == hotkeys[9] then
+				hpPercent = hpPercent-0.05
+				text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
+			end
+			if code == hotkeys[10] then
+				hpPercent = hpPercent+0.05
+				text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
+			end
 			if code == hotkeys[7] and not IsKeyDown(16) then
 				local sel = mp.selection[1]
 				local spell = sel:FindItem("item_blink")
