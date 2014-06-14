@@ -1,20 +1,20 @@
 -- Made by Staskkk.
 
 -- Config
-x = 50 -- x label position
-y = 30 -- y label position
-hpPercent = 0.50 -- % when meepo go  to base for heal
+x = 50
+y = 30
+hpPercent = 0.50
 hotkeys = {
-string.byte("R"), -- poof all meepo's to selected meepo 
-string.byte("E"), -- poof all meepo's to selected meepo and selected meepo poof on hisself
-string.byte("D"), -- use poof to fountain side
-string.byte("F"), -- with Shift: meepos go to farm jungle
-string.byte("Q"), -- all meepos using his net to catch enemy ,ur mouse cursor must be on enemy hero, it using net one by one.
-string.byte(" "), -- Press for script activate(one time)
-string.byte("F"), -- WomboCombo with blinkdagger
-string.byte("S"), -- stop combo, working only if script activated
-219, -- use to plus 0.05 hpPercent
-221} -- use to minus 0.05 hpPercent
+string.byte("R"),
+string.byte("E"),
+string.byte("D"),
+string.byte("F"), -- with Shift
+string.byte("Q"),
+string.byte(" "),
+string.byte("F"),
+string.byte("S"),
+219,
+221} 
 
 -- Code
 font = drawMgr:CreateFont("meepofont","Arial",14,500)
@@ -124,23 +124,16 @@ function Key(msg,code)
 			end
 		end
 		if msg == KEY_DOWN and code == hotkeys[5] and target and (sleep[3] <= GetTick() and target == targe or target ~= targe) then
-			local throw = true
 			targe = target
-			for i,v in ipairs(target.modifiers) do
-				if v.name == "modifier_meepo_earthbind" and v.remainingTime > 0.5 then 
+			local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+			local throw = true
+			for i,v in ipairs(meepos) do 
+				local spell = v:GetAbility(1)
+				if throw and spell.state == LuaEntityAbility.STATE_READY and math.sqrt((target.position.x-v.position.x)^2+(target.position.y-v.position.y)^2) <= spell.castRange then
+					v:CastAbility(spell,target.position)
+					v:Attack(target,true)
+					sleep[3] = GetTick() + 1500
 					throw = false
-				end
-			end
-			if throw then
-				local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
-				for i,v in ipairs(meepos) do 
-					local spell = v:GetAbility(1)
-					if throw and spell.state == LuaEntityAbility.STATE_READY and math.sqrt((target.position.x-v.position.x)^2+(target.position.y-v.position.y)^2) <= spell.castRange then
-						v:CastAbility(spell,target.position)
-						v:Attack(target,true)
-						sleep[3] = GetTick() + 500
-						throw = false
-					end
 				end
 			end
 		end
@@ -205,6 +198,10 @@ function Tick(tick)
 		end
 		sele = false
 	end
+	local ent = entityList:GetMouseover()
+	if ent and ent.type == LuaEntity.TYPE_HERO and ent.team ~= mp.team then
+		target = ent
+	end
 	if tick <= sleep[1] then return end
 	if entityList:GetMyHero().name ~= "npc_dota_hero_meepo" then
 		unreg = true
@@ -224,10 +221,6 @@ function Tick(tick)
 		init = true
 	end
 	if activated then
-		local ent = entityList:GetMouseover()
-		if ent and ent.type == LuaEntity.TYPE_HERO and ent.team ~= mp.team then
-			target = ent
-		end
 		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 		for i,v in ipairs(meepos) do
 			if not fount[i] and v.health/v.maxHealth < hpPercent then
