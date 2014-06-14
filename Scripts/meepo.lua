@@ -1,20 +1,20 @@
 -- Made by Staskkk.
 
 -- Config
-x = 50
-y = 30
-hpPercent = 0.50
+x = 50 -- x lable position
+y = 30 -- y lable position
+hpPercent = 0.50 -- % when meepo go to base for heal
 hotkeys = {
-string.byte("R"),
-string.byte("E"),
-string.byte("D"),
+string.byte("R"), -- poof all meepo's to selected meepo
+string.byte("E"), -- poof all meepo's to selected meepo and selected meepo poof on hisself
+string.byte("D"), -- use poof to fountain side
 string.byte("F"), -- with Shift
-string.byte("Q"),
-string.byte(" "),
-string.byte("F"),
-string.byte("S"),
-219,
-221} 
+string.byte("Q"), -- all meepos using his net to catch enemy ,ur mouse cursor must be on enemy hero, it using net one by one.
+string.byte(" "), -- Press for script activate(one time)
+string.byte("F"), -- WomboCombo with blinkdagger
+string.byte("S"), -- stop combo, working only if script activated
+219, -- use to plus 0.05 hpPercent
+221} -- use to minus 0.05 hpPercent
 
 -- Code
 font = drawMgr:CreateFont("meepofont","Arial",14,500)
