@@ -130,7 +130,7 @@ function Key(msg,code)
 			for i,v in ipairs(meepos) do 
 				local spell = v:GetAbility(1)
 				if throw and spell.state == LuaEntityAbility.STATE_READY and math.sqrt((target.position.x-v.position.x)^2+(target.position.y-v.position.y)^2) <= spell.castRange then
-					v:CastAbility(spell,target.position)
+					v:CastAbility(spell,Vector(target.position.x+220*math.cos(target.rotR), target.position.y+220*math.sin(target.rotR), target.position.z))
 					v:Attack(target,true)
 					sleep[3] = GetTick() + 1500
 					throw = false
