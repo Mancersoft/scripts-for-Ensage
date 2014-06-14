@@ -11,7 +11,8 @@ string.byte("D"),
 string.byte("F"), -- with Shift
 string.byte("Q"),
 string.byte(" "),
-string.byte("F")} 
+string.byte("F"),
+string.byte("S")} 
 
 -- Code
 font = drawMgr:CreateFont("meepofont","Arial",14,500)
@@ -22,9 +23,6 @@ fount = {false,false,false,false,false}
 unreg = false
 com = false
 sleep = {0, 0, 0, 0}
---font = drawMgr:CreateFont("critfont","Arial",14,500)
---defaultText = "Critscript: Disabled"
---text = drawMgr:CreateText(x,y,-1,defaultText,font)
 
 function Key(msg,code)
 	if client.console or client.chat or not init then return end
@@ -39,21 +37,41 @@ function Key(msg,code)
 	if activated then
 		if msg == KEY_UP then
 			if code == hotkeys[7] and not IsKeyDown(16) then
-				targ = entityList:GetMouseover()
-				if targ and targ.type == LuaEntity.TYPE_HERO and targ.team ~= mp.team then
-					local sel = mp.selection[1]
-					local spell = sel:FindItem("item_blink")
-					if sel and sel.name == "npc_dota_hero_meepo" and spell and spell.state == LuaEntityAbility.STATE_READY then
-						poofall(sel)
+				local sel = mp.selection[1]
+				local spell = sel:FindItem("item_blink")
+				if sel and sel.name == "npc_dota_hero_meepo" and spell and spell.state == LuaEntityAbility.STATE_READY then
+					poofall(sel)
+					if not eff then
 						eff = Effect(sel, "range_display")
 						eff:SetVector( 1, Vector(1200,0,0) )
-						dot = Effect(targ, "urn_of_shadows")
-						dot:SetVector( 1, Vector(0,0,0))
-						seld = sel
-						dag = spell
+					end
+					targ = entityList:GetMouseover()
+					dot = nil
+					if targ and targ.type == LuaEntity.TYPE_HERO and targ.team ~= mp.team then
+						nota = 0
+							dot = Effect(targ, "urn_of_shadows_damage")
+							dot:SetVector( 1, Vector(0,0,0))
+					else
+						nota = client.mousePosition
+							dot = Effect(nota, "fire_torch")
+							dot:SetVector(0, nota)
+					end
+					seld = sel
+					dag = spell
+					if sleep[2] <= GetTick() then
 						sleep[2] = GetTick() + 1400
 						com = true
 					end
+				end
+			end
+			if code == hotkeys[8] and com then
+				sleep[2] = 0
+				com = false
+				eff = nil
+				dot = nil
+				local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+				for i,v in ipairs(meepos) do
+					v:Stop()
 				end
 			end
 			if code == hotkeys[1] or code == hotkeys[2] then
@@ -73,11 +91,7 @@ function Key(msg,code)
 				if sel and sel.name == "npc_dota_hero_meepo" then
 					local spell = sel:GetAbility(2)
 					if spell.state == LuaEntityAbility.STATE_READY then
-						if sel.team == LuaEntity.TEAM_RADIANT then
-							sel:CastAbility(spell,Vector(-7272,-6757,270))
-						else
-							sel:CastAbility(spell,Vector(7200,6624,256))
-						end
+						sel:CastAbility(spell,foun)
 					end
 				end
 			end
@@ -127,7 +141,7 @@ function poofall(sel)
 	for i,v in ipairs(meepos) do
 		if v ~= sel then
 			local spell = v:GetAbility(2)
-			if spell.state == LuaEntityAbility.STATE_READY then
+			if spell.state == LuaEntityAbility.STATE_READY and not spell.abilityPhase then
 				v:CastAbility(spell,sel)
 				skill = spell
 				n = 0
@@ -146,18 +160,41 @@ function Tick(tick)
 		com = false
 		eff = nil
 		dot = nil
-		seld:CastAbility(dag, targ.position)
+		if nota ~= 0 then
+			seld:CastAbility(dag, nota)
+		else 
+			seld:CastAbility(dag, targ.position)
+		end
 		n = 0
 		sele = true
 		sleep[4] = tick + 100
 		spell = seld:GetAbility(1)
 		if spell and spell.state == LuaEntityAbility.STATE_READY then
-			seld:CastAbility(spell, targ.position,true)
+			if nota ~= 0 then
+				seld:CastAbility(spell, nota,true)
+			else
+				seld:CastAbility(spell, targ.position,true)
+			end
 		end
 		spell = seld:GetAbility(2)
 		if spell and spell.state == LuaEntityAbility.STATE_READY then
-			seld:CastAbility(spell, targ.position,true)
+			if nota ~= 0 then
+				seld:CastAbility(spell, nota,true)
+			else
+				seld:CastAbility(spell, targ.position,true)
+			end
 		end
+	end
+	if sele and tick > sleep[4] then
+	local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+		if n == 0 then
+			for i,v in ipairs(meepos) do
+				mp:SelectAdd(v)
+			end
+		else
+			mp:SelectAdd(meepos[n])
+		end
+		sele = false
 	end
 	if tick <= sleep[1] then return end
 	if entityList:GetMyHero().name ~= "npc_dota_hero_meepo" then
@@ -170,6 +207,11 @@ function Tick(tick)
 	if not init then
 		text = drawMgr:CreateText(x,y,-1,"Meepo script: NOT ACTIVE",font)
 		mp = entityList:GetMyPlayer()
+		if mp.team == LuaEntity.TEAM_RADIANT then
+				foun = Vector(-7272,-6757,270)
+			else
+				foun = Vector(7200,6624,256)
+			end
 		init = true
 	end
 	if activated then
@@ -177,39 +219,28 @@ function Tick(tick)
 		if ent and ent.type == LuaEntity.TYPE_HERO and ent.team ~= mp.team then
 			target = ent
 		end
-		if sele and tick > sleep[4] then
-		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
-			if n == 0 then
-				for i,v in ipairs(meepos) do
-					mp:SelectAdd(v)
-				end
-			else
-				mp:SelectAdd(meepos[n])
-			end
-			sele = false
-		end
 		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 		for i,v in ipairs(meepos) do
 			if not fount[i] and v.health/v.maxHealth < hpPercent then
 				mp:Unselect(v)
-				if v.team == LuaEntity.TEAM_RADIANT then
-					v:Move(Vector(-7272,-6757,270))
-				else
-					v:Move(Vector(7200,6624,256))
-				end
+					v:Move(foun)
 				fount[i] = true
 			end
 			if fount[i] and v.health == v.maxHealth then
-				local sel = mp.selection[1]
-				if sel and sel.name == "npc_dota_hero_meepo" then
-					local spell = v:GetAbility(2)
-					if spell.state == LuaEntityAbility.STATE_READY then
-						v:CastAbility(spell,sel)
-						sleep[4] = tick + 1500
-						n = i
-						sele = true
-						fount[i] = false
+				if math.sqrt((v.position.x-foun.x)^2+(v.position.y-foun.y)^2) <= 1200 then
+					local sel = mp.selection[1]
+					if sel and sel.name == "npc_dota_hero_meepo" then
+						local spell = v:GetAbility(2)
+						if spell.state == LuaEntityAbility.STATE_READY then
+							v:CastAbility(spell,sel)
+							sleep[4] = tick + 1500
+							n = i
+							sele = true
+							fount[i] = false
+						end
 					end
+				else
+					fount[i] = false
 				end
 			end
 		end
