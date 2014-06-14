@@ -13,8 +13,8 @@ string.byte("Q"), -- all meepos using his net to catch enemy ,ur mouse cursor mu
 string.byte(" "), -- Press for script activate(one time)
 string.byte("F"), -- WomboCombo with blinkdagger
 string.byte("S"), -- stop combo, working only if script activated
-219, -- use to change hpPercent
-221} -- use to change hpPercent
+219, -- use to plus 0.05 hpPercent
+221} -- use to minus 0.05 hpPercent
 
 -- Code
 font = drawMgr:CreateFont("meepofont","Arial",14,500)
