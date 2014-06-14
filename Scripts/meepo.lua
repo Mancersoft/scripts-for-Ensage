@@ -1,8 +1,8 @@
 -- Made by Staskkk.
 
 -- Config
-x = 50 -- x screen position
-y = 30 -- y screen position
+x = 50 -- x label position
+y = 30 -- y label position
 hpPercent = 0.50 -- % when meepo go  to base for heal
 hotkeys = {
 string.byte("R"), -- poof all meepo's to selected meepo 
