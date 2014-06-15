@@ -18,6 +18,8 @@ hotkey = {qqq="1", qqw="2", qww="3", www="4", wwe="5", wee="6", eee="7", qee="8"
 
 -- code
 sleepTick = 0
+registered = false
+unreg = false
 init = false
 font = drawMgr:CreateFont("invokerfont","Arial",14,500)
 nextStep = false
@@ -118,8 +120,11 @@ function Tick( tick )
         end
         
         if me and me.name ~= "npc_dota_hero_invoker"  then
-                script:Disable()
-                print("Invoking is not capable of comboing with "..me.name)
+                script:UnregisterEvent(Key)
+                script:UnregisterEvent(Tick)
+                script:UnregisterEvent(Frame)
+                unreg = true
+                return
         end
        
         if prepWall and tick > prepTick + 1000 and CanCast(GetSpell("invoker_ice_wall")) then
@@ -550,6 +555,28 @@ function Frame(tick)
         end
 end
  
-script:RegisterEvent(EVENT_TICK,Tick)
-script:RegisterEvent(EVENT_FRAME,Frame)
-script:RegisterEvent(EVENT_KEY,Key)
+function Load()
+        if registered then return end
+        script:RegisterEvent(EVENT_TICK,Tick)
+        script:RegisterEvent(EVENT_FRAME,Frame)
+        script:RegisterEvent(EVENT_KEY,Key)
+        registered = true
+end
+ 
+function Close()
+	if not unreg then
+        script:UnregisterEvent(Key)
+        script:UnregisterEvent(Tick)
+        script:UnregisterEvent(Frame)
+	end
+	if text then text.visible = false end
+	collectgarbage("collect")
+	registered = false
+end
+ 
+script:RegisterEvent(EVENT_LOAD,Load)
+script:RegisterEvent(EVENT_CLOSE,Close)
+ 
+if client.connected and not client.loading then
+        Load()
+end
