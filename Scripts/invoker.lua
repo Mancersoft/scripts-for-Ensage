@@ -11,7 +11,7 @@ combokey = {"Z","X","C","T","V","B"}
 -- 5 - SnapDPSCombo: Cold Snap - Forge Spirit - Alacrity
 -- 6 - EulSSMeteorBlast Eul - Sun Strike - Chaos Meteor - Deafening Blast
 hotkey = {qqq="1", qqw="2", qww="3", www="4", wwe="5", wee="6", eee="7", qee="8", qqe="9", qwe="0"}
--- "Q" with space = 3 Quas, "W" with space = 3 Wex, "E" with spave = 3 Exort
+-- "Q" with space = 3 Quas, "W" with space = 3 Wex, "E" with space = 3 Exort
 -- Tab - shows you combos hotkeys
 
 -- code
