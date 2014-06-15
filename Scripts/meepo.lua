@@ -198,10 +198,6 @@ function Tick(tick)
 		end
 		sele = false
 	end
-	local ent = entityList:GetMouseover()
-	if ent and ent.type == LuaEntity.TYPE_HERO and ent.team ~= mp.team then
-		target = ent
-	end
 	if tick <= sleep[1] then return end
 	if entityList:GetMyHero().name ~= "npc_dota_hero_meepo" then
 		unreg = true
@@ -219,6 +215,10 @@ function Tick(tick)
 				foun = Vector(7200,6624,256)
 			end
 		init = true
+	end
+	local ent = entityList:GetMouseover()
+	if ent and ent.type == LuaEntity.TYPE_HERO and ent.team ~= mp.team then
+		target = ent
 	end
 	if activated then
 		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
