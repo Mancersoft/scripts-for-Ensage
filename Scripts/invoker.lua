@@ -1,5 +1,8 @@
 -- Made by Sophylax for old version. Reworked by Staskkk for New version.
 
+-- config
+x = 50
+y = 30
 combokey = {"Z","X","C","T","V","B"}
 -- 1 - TotalCombo: Tornado - EMP - Chaos Meteor - Deafening Blast - Cold Snap - Forge Spirit - Sun Strike - Ice Wall
 -- 2 - TornadoEMPCombo: Tornado - EMP
@@ -8,10 +11,12 @@ combokey = {"Z","X","C","T","V","B"}
 -- 5 - SnapDPSCombo: Cold Snap - Forge Spirit - Alacrity
 -- 6 - EulSSMeteorBlast Eul - Sun Strike - Chaos Meteor - Deafening Blast
 hotkey = {qqq="1", qqw="2", qww="3", www="4", wwe="5", wee="6", eee="7", qee="8", qqe="9", qwe="0"}
+-- "Q" with space = 3 Quas, "W" with space = 3 Wex, "E" with spave = 3 Exort
+-- Tab - shows you combos hotkeys
+
+-- code
 sleepTick = 0
 init = false
-x = 50
-y = 30
 font = drawMgr:CreateFont("invokerfont","Arial",14,500)
 nextStep = false
 currentTick = nil
