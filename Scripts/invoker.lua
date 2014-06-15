@@ -1,5 +1,7 @@
 -- Made by Sophylax for old version. Reworked by Staskkk for New version.
 
+require("libs.Utils")
+
 -- config
 x = 50
 y = 30
