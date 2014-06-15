@@ -1,5 +1,6 @@
 -- Made by Staskkk.
 
+require("libs.Utils")
 -- Config
 x = 50 -- x lable position
 y = 30 -- y lable position
