@@ -1,7 +1,12 @@
 -- Made by Sophylax for old version. Reworked by Staskkk for New version.
 
-combokey = {"Z","X","C","T"}
-combos = {"EulSSMeteorBlast","TornadoMeteorWallCombo","SnapDPSCombo","TotalCombo"}
+combokey = {"Z","X","C","T","V","B"}
+-- 1 - TotalCombo: Tornado - EMP - Chaos Meteor - Deafening Blast - Cold Snap - Forge Spirit - Sun Strike - Ice Wall
+-- 2 - TornadoEMPCombo: Tornado - EMP
+-- 3 - TornadoMeteorWallCombo: Tornado - Chaos Meteor - Ice Wall
+-- 4 - MeteorBlastCombo: Chaos Meteor - Deafening Blast
+-- 5 - SnapDPSCombo: Cold Snap - Forge Spirit - Alacrity
+-- 6 - EulSSMeteorBlast Eul - Sun Strike - Chaos Meteor - Deafening Blast
 hotkey = {qqq="1", qqw="2", qww="3", www="4", wwe="5", wee="6", eee="7", qee="8", qqe="9", qwe="0"}
 sleepTick = 0
 init = false
@@ -31,24 +36,29 @@ future = {}
 Keys = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
 activeCombo = false
 chatting = {false,false}
+combos = {"TotalCombo","TornadoEMP","TornadoMeteorWall","MeteorBlast","SnapDPS","EulSSMeteorBlast"}
  
 -------------------------- COMBO SETTINGS --------------------------
- 
-local allcombos = {"TotalCombo","TornadoEMPCombo","TornadoMeteorWallCombo","MeteorBlastCombo","SnapDPSCombo","EulSSMeteorBlast"}
- 
+
 -- Tornado - EMP - Chaos Meteor - Deafening Blast - Cold Snap - Forge Spirit - Sun Strike - Ice Wall
 function TotalCombo( )
-        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay[me:GetAbility(2).level]+250},www,{"wait",empdelay[me:GetAbility(2).level]},wee,{"wait",1300},qwe,qqq,qee,eee}
+        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 then
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay[me:GetAbility(2).level]+250},www,{"wait",empdelay[me:GetAbility(2).level]},wee,{"wait",1300},qwe,qqq,qee,eee}
+        end
 end
  
 -- Tornado - EMP
 function TornadoEMPCombo( )
-        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay[me:GetAbility(2).level]+250},www}
+        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 then
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay[me:GetAbility(2).level]+250},www}
+        end
 end
  
 -- Tornado - Chaos Meteor - Ice Wall
 function TornadoMeteorWallCombo( )
-        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-1300},wee,{"wait",1000},qqe}
+        if me:GetAbility(1).level ~= 0 then
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-1300},wee,{"wait",1000},qqe}
+        end
 end
  
 -- Chaos Meteor - Deafening Blast
@@ -128,22 +138,6 @@ function Tick( tick )
                 end
         end
        
-        if Keys[19] and SleepCheck() and HasSpell("invoker_sun_strike") then
-                E = me:GetAbility(3)
-                if  E and E.level ~= 0 then
-                        enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,team=5-me.team,alive=true,visible=true,illusion=false})
-                        for i,v in ipairs(enemies) do
-                                damage = ssdamage[E.level]
-                                if v.health < damage then
-                                        CastPredictedSunStrike(v)
-                                end
-                        end
-                end
-                Sleep(250)
-        end
-       
-       
-       
         if me.alive == true and SleepCheck() then
                 if Keys[15]  then
                         if Keys[1] then
@@ -174,6 +168,10 @@ function Tick( tick )
                                 PrepareCombo(TornadoMeteorWallCombo( ))
                         elseif Keys[14] then
                                 PrepareCombo(MeteorBlastCombo( ))
+                        elseif Keys[20] then
+                                PrepareCombo(SnapDPSCombo( ))
+                        elseif Keys[21] then
+                                PrepareCombo(EulSSMeteorBlast( ))
                         elseif Keys[16] and CanCast(me:GetAbility(1)) then
                                 mp:UseAbility(me:GetAbility(1))
                                 mp:UseAbility(me:GetAbility(1))
@@ -189,16 +187,6 @@ function Tick( tick )
                                 mp:UseAbility(me:GetAbility(3))
                                 mp:UseAbility(me:GetAbility(3))
                                 Sleep(250)
-                        end
-                elseif Keys[20] then
-                        if Keys[11] and tick > cycleSleep + 250 then
-                                CycleCombo(1)
-                        elseif Keys[12] and tick > cycleSleep + 250 then
-                                CycleCombo(2)
-                        elseif Keys[13] and tick > cycleSleep + 250 then
-                                CycleCombo(3)
-                        elseif Keys[14] and tick > cycleSleep + 250 then
-                                CycleCombo(4)
                         end
                 elseif SleepCheck() then
                         if Keys[1] then
@@ -221,21 +209,27 @@ function Tick( tick )
                                 CastCombination(qqe)
                         elseif Keys[10] then
                                 CastCombination(qwe)
-                        elseif Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and not activeCombo then
+                        elseif Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] and not activeCombo then
                                  TotalCombo( )
                                 activeCombo = true
-                        elseif not Keys[11] and Keys[12] and not Keys[13] and not Keys[14] and not activeCombo then
+                        elseif not Keys[11] and Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] and not activeCombo then
                                  TornadoEMPCombo( )
                                 activeCombo = true
-                        elseif not Keys[11] and not Keys[12] and Keys[13] and not Keys[14] and not activeCombo then
+                        elseif not Keys[11] and not Keys[12] and Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] and not activeCombo then
                                  TornadoMeteorWallCombo( )
                                 activeCombo = true
-                        elseif not Keys[11] and not Keys[12] and not Keys[13] and Keys[14] and not activeCombo then
+                        elseif not Keys[11] and not Keys[12] and not Keys[13] and Keys[14] and not Keys[20] and not Keys[21] and not activeCombo then
                                  MeteorBlastCombo( )
                                 activeCombo = true
-                        elseif (Keys[11] or  Keys[12] or  Keys[13] or  Keys[14])and activeCombo then
+                        elseif not Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and Keys[20] and not Keys[21] and not activeCombo then
+                                 SnapDPSCombo( )
+                                activeCombo = true
+                        elseif not Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and Keys[21] and not activeCombo then
+                                 EulSSMeteorBlast( )
+                                activeCombo = true
+                        elseif (Keys[11] or  Keys[12] or  Keys[13] or  Keys[14] or  Keys[20] or  Keys[21])and activeCombo then
                                 Combo()
-                        elseif not Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] then
+                        elseif not Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] then
                                 StopCombo()
                                 activeCombo = false
                         end
@@ -347,7 +341,7 @@ function PrepareCombo(func)
 end
  
 function InCombo()
-        return (Keys[11] or  Keys[12] or  Keys[13] or  Keys[14])
+        return (Keys[11] or  Keys[12] or  Keys[13] or  Keys[14] or  Keys[20] or Keys[21])
 end
  
 function Combo()
@@ -430,21 +424,6 @@ function TrackAllEnemies()
         end
 end
  
-function CastPredictedSunStrike(t)
-        for i,v in ipairs(enemyTrack) do
-                if t and v and v[4] then
-                        if v[4].position.x == t.position.x and v[4].position.z == t.position.z and v[4].position.y == t.position.y and v[4].name == t.name then
-                                if enemyTrack[i] and  enemyTrack[i][2] and enemyTrack[i][3] then
-                                        if v[3] and v[1] then
-                                                mp:UseAbility(GetSpell("invoker_sun_strike"),Vector(enemyTrack[i][1][1] + enemyTrack[i][3][1]*1700,enemyTrack[i][1][2] + enemyTrack[i][3][2]*1700,enemyTrack[i][1][3] + enemyTrack[i][3][3]*1700))
-                                                --mp:UseAbility(GetSpell("invoker_sun_strike"),Vector(enemyTrack[i][1][1] + enemyTrack[i][8][1]*1700,t.position.y,t.position.z))
-                                        end
-                                end
-                        end
-                end
-        end
-end
- 
 function PrepareIceWall()
         mp:Stop()
         prepWall = true
@@ -504,25 +483,6 @@ function SleepCheck()
         return sleepTick == nil or currentTick > sleepTick
 end
  
-function CycleCombo(index)
-        local _index = nil
-        --Get index of the current combo
-        for i,v in ipairs(allcombos) do
-                if v == combos[index] then
-                        _index = i
-                end
-        end
-       
-        if _index then
-                _index = _index + 1
-                if _index > #allcombos then
-                        _index = 1
-                end
-                combos[index] = allcombos[_index]
-                cycleSleep = currentTick
-        end
-end
- 
 --Input detector
 function Key( msg, code )
     if code == 13  then
@@ -546,13 +506,14 @@ function Key( msg, code )
         elseif code == string.byte(combokey[1]) then Keys[11] = (msg == KEY_DOWN)
         elseif code == string.byte(combokey[2]) then Keys[12] = (msg == KEY_DOWN)
         elseif code == string.byte(combokey[3]) then Keys[13] = (msg == KEY_DOWN)
-        elseif code == string.byte(combokey[4]) then Keys[14] = (msg == KEY_DOWN)    
+        elseif code == string.byte(combokey[4]) then Keys[14] = (msg == KEY_DOWN)
+        elseif code == string.byte(combokey[5]) then Keys[20] = (msg == KEY_DOWN)
+        elseif code == string.byte(combokey[6]) then Keys[21] = (msg == KEY_DOWN)   
         elseif code == string.byte(" ") then Keys[15] = (msg == KEY_DOWN)      
         elseif code == string.byte("Q") then Keys[16] = (msg == KEY_DOWN)      
         elseif code == string.byte("W") then Keys[17] = (msg == KEY_DOWN)      
         elseif code == string.byte("E") then Keys[18] = (msg == KEY_DOWN)
-        elseif code == string.byte("V") then Keys[19] = (msg == KEY_DOWN)
-        elseif code == 0x09 then Keys[20] = (msg == KEY_DOWN)   --Tab
+        elseif code == 0x09 then Keys[19] = (msg == KEY_DOWN)   --Tab
     elseif code == 219 then range = range - 10
     elseif code == 221 then range = range + 10
         end
@@ -573,38 +534,13 @@ function Frame(tick)
         end
        
         --Combo Info
-        if Keys[20] and me then
+        if Keys[19] and me then
+                local hkey = ""
                 for i,v in ipairs(combokey) do
-                        local hkey = v..": "..combos[i]
+                        hkey = hkey..v..": "..combos[i].."; "
+                end
                         text.text = hkey
-                end
         end
-       
-        --Sunstrike Damage
-        --[[if ssMonitor and me then
-                sskill = {}
-                local pos = Vector()
-                E = me:GetAbility(3)
-                if  E and E.level ~= 0 then
-                        enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,team=5-me.team,alive=true,visible=true,illusion=false})
-                        for i,v in ipairs(enemies) do
-                                damage = ssdamage[E.level]
-                                if v.health < damage then
-                                        text.text = "KILL!"
-                                        table.insert(sskill,v)
-                                else
-                                        text.text = math.floor(damage)..""     
-                                end
-                        end
-                end
-                message = "Sunstrike Kill:"
-                for i,v in ipairs(sskill) do
-                        message = message.." "..v.name
-                end
-                if #sskill > 0 then
-                        text.text = message
-                end
-        end--]]
 end
  
 script:RegisterEvent(EVENT_TICK,Tick)
