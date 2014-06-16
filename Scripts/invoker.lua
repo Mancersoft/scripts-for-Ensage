@@ -15,7 +15,7 @@ combokey = {"Z","X","C","T","V","B"}
 hotkey = {qqq="1", qqw="2", qww="3", www="4", wwe="5", wee="6", eee="7", qee="8", qqe="9", qwe="0"}
 -- "Q" with space = 3 Quas, "W" with space = 3 Wex, "E" with space = 3 Exort
 -- Tab - shows you combos hotkeys
-
+range = 1000
 -- code
 sleepTick = 0
 registered = false
@@ -34,13 +34,9 @@ wallCast = false
 wallTick = 0
 prepWall = false
 prepTick = 0
-ssMonitor = true
 target = nil
-range = 1000
-ssdamage = {100,162.5,225,287.5,350,412.5,475}
 torndur = {0800,1100,1400,1700,2000,2300,2500}
 empdelay = {3700,3400,3150,2850,2600,2300,2000}
-enemyTrack = {}
 queue = {}
 future = {}
 Keys = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
