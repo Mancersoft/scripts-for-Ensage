@@ -120,9 +120,6 @@ function Tick( tick )
                 init = true
         end
         currentTick = tick
-        if tick <= sleeep then return end
-        sleeep = tick + 200
-        FindTarget()
         if prepWall and tick > prepTick + 1000 and CanCast(GetSpell("invoker_ice_wall")) then
                 CastIceWall(target)
                 prepTick = false
@@ -243,6 +240,9 @@ function Tick( tick )
                         end
                 end
         end
+        if tick <= sleeep then return end
+        sleeep = tick + 200
+        FindTarget()
         if target ~= nil and me then
                  text.text = "Target : "..string.sub(target.name,15).."; Distance : "..math.floor(GetDistance2D(target,me))
         else
