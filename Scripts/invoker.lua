@@ -244,7 +244,7 @@ function Tick( tick )
                 end
         end
         if target ~= nil and me then
-                 text.text = "Target : "..target.name.."; Distance : "..GetDistance2D(target,me)
+                 text.text = "Target : "..string.sub(target.name,15).."; Distance : "..math.floor(GetDistance2D(target,me))
         else
                  text.text = "Search Range : "..range
         end
