@@ -124,7 +124,7 @@ function Key(msg,code)
 				end
 			end
 		end
-		if msg == KEY_DOWN and code == hotkeys[5] and target and (sleep[3] <= GetTick() and target == targe or target ~= targe) then
+		if msg == KEY_DOWN and code == hotkeys[5] and target and ((sleep[3] <= GetTick() and target == targe) or (target ~= targe)) then
 			targe = target
 			local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 			local throw = true
