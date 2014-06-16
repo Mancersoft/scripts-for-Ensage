@@ -28,6 +28,7 @@ comboTick = 0
 trackTick = 0
 forgeAttack = false
 forgeTick = 0
+sleeep = 0
 cycleSleep = 0
 wallCast = false
 wallTick = 0
@@ -96,9 +97,15 @@ function Tick( tick )
         if not client.connected or client.loading or client.console or not entityList:GetMyHero() then
                 return
         end
-        me = entityList:GetMyHero()
-        mp = entityList:GetMyPlayer()
         if not init then
+                me = entityList:GetMyHero()
+                if me and me.name ~= "npc_dota_hero_invoker"  then
+                        script:UnregisterEvent(Key)
+                        script:UnregisterEvent(Tick)
+                        unreg = true
+                        return
+                end
+                mp = entityList:GetMyPlayer()
                 text = drawMgr:CreateText(x,y,-1,"Invoker script",font)
                 qqq = {me:GetAbility(1),me:GetAbility(1),me:GetAbility(1),"invoker_cold_snap",1000}
                 qqw = {me:GetAbility(1),me:GetAbility(1),me:GetAbility(2),"invoker_ghost_walk",-1}
@@ -113,20 +120,9 @@ function Tick( tick )
                 init = true
         end
         currentTick = tick
+        if tick <= sleeep then return end
+        sleeep = tick + 200
         FindTarget()
-        if currentTick > trackTick + 50 then
-                TrackAllEnemies()
-                trackTick = currentTick
-        end
-        
-        if me and me.name ~= "npc_dota_hero_invoker"  then
-                script:UnregisterEvent(Key)
-                script:UnregisterEvent(Tick)
-                script:UnregisterEvent(Frame)
-                unreg = true
-                return
-        end
-       
         if prepWall and tick > prepTick + 1000 and CanCast(GetSpell("invoker_ice_wall")) then
                 CastIceWall(target)
                 prepTick = false
@@ -246,6 +242,18 @@ function Tick( tick )
                                 activeCombo = false
                         end
                 end
+        end
+        if target ~= nil and me then
+                 text.text = "Target : "..target.name.."; Distance : "..GetDistance2D(target,me)
+        else
+                 text.text = "Search Range : "..range
+        end
+        if Keys[19] and me then
+                local hkey = ""
+                for i,v in ipairs(combokey) do
+                        hkey = hkey..v..": "..combos[i].."; "
+                end
+                        text.text = hkey
         end
 end
  
@@ -411,31 +419,7 @@ function ForgeAttack()
         mp:Attack(target)
         mp:Select(me)
 end
- 
-function TrackAllEnemies()
-        local enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,team=5-me.team,illusion=false})
-        for i,v in ipairs(enemies) do
-                if enemyTrack[i] == nil then
-                                enemyTrack[i] = {}
-                else
-                        if v.visible == true then
-                                if enemyTrack[i][1] == nil then
-                                        enemyTrack[i][1] = {v.position.x,v.position.y,v.position.z,currentTick}
-                                else
-                                        enemyTrack[i][2] = enemyTrack[i][1]
-                                        enemyTrack[i][1] = {v.position.x,v.position.y,v.position.z,currentTick}
-                                        enemyTrack[i][3] = {(enemyTrack[i][1][1]-enemyTrack[i][2][1])/(enemyTrack[i][1][4]-enemyTrack[i][2][4]),(enemyTrack[i][1][2]-enemyTrack[i][2][2])/(enemyTrack[i][1][4]-enemyTrack[i][2][4]),(enemyTrack[i][1][3]-enemyTrack[i][2][3])/(enemyTrack[i][1][4]-enemyTrack[i][2][4])}                               
-                                end
-                        else
-                                enemyTrack[i][1] = nil
-                                enemyTrack[i][2] = nil
-                                enemyTrack[i][3] = nil
-                        end
-                        enemyTrack[i][4] = v
-                end
-        end
-end
- 
+  
 function PrepareIceWall()
         mp:Stop()
         prepWall = true
@@ -535,31 +519,10 @@ function GetDistance2D(a,b)
         return math.sqrt(math.pow(a.position.x-b.position.x,2)+math.pow(a.position.y-b.position.y,2))
 end
  
-function Frame(tick)
-        if not init then return end
-        --Target Info
-        if target ~= nil and me then
-                 text.text = "Target : "..target.name
-                 text.text = "Distance : "..GetDistance2D(target,me)
-        else
-                 text.text = "Search Range : "..range
-        end
-       
-        --Combo Info
-        if Keys[19] and me then
-                local hkey = ""
-                for i,v in ipairs(combokey) do
-                        hkey = hkey..v..": "..combos[i].."; "
-                end
-                        text.text = hkey
-        end
-end
- 
 function Load()
         if registered then return end
-        script:RegisterEvent(EVENT_TICK,Tick)
-        script:RegisterEvent(EVENT_FRAME,Frame)
         script:RegisterEvent(EVENT_KEY,Key)
+        script:RegisterEvent(EVENT_TICK,Tick)
         registered = true
 end
  
@@ -567,9 +530,9 @@ function Close()
 	if not unreg then
         script:UnregisterEvent(Key)
         script:UnregisterEvent(Tick)
-        script:UnregisterEvent(Frame)
 	end
 	if text then text.visible = false end
+    init = false
 	collectgarbage("collect")
 	registered = false
 end
@@ -577,6 +540,6 @@ end
 script:RegisterEvent(EVENT_LOAD,Load)
 script:RegisterEvent(EVENT_CLOSE,Close)
  
-if client.connected and not client.loading then
+if client.connected and not client.loading and not registered then
         Load()
 end
