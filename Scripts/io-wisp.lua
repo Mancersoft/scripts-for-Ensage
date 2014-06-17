@@ -55,7 +55,6 @@ function Tick(tick)
 			foun = Vector(-7200,-6700,270)
 		else
 			foun = Vector(7200,6624,256)
-			--foun = Vector(7150,6500,256)
 		end
 		init = true
 	end
