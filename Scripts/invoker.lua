@@ -49,7 +49,7 @@ combos = {"TotalCombo","TornadoEMP","TornadoMeteorWall","MeteorBlast","SnapDPS",
 -- Tornado - EMP - Chaos Meteor - Deafening Blast - Cold Snap - Forge Spirit - Sun Strike - Ice Wall
 function TotalCombo( )
         if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 then
-                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay[me:GetAbility(2).level]+250},www,{"wait",empdelay[me:GetAbility(2).level]},wee,{"wait",1300},qwe,qqq,qee,eee}
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay[me:GetAbility(2).level]+250},www,{"wait",100},wee,{"wait",1300},qwe,qqq,qee,eee}
         end
 end
  
