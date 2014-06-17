@@ -200,14 +200,14 @@ function Tick(tick)
 		sele = false
 	end
 	if tick <= sleep[1] then return end
-	if entityList:GetMyHero().name ~= "npc_dota_hero_meepo" then
-		unreg = true
-		script:UnregisterEvent(Key)
-		script:UnregisterEvent(Tick)
-		return
-	end
 	sleep[1] = tick + 200
 	if not init then
+		if entityList:GetMyHero().name ~= "npc_dota_hero_meepo" then
+			unreg = true
+			script:UnregisterEvent(Key)
+			script:UnregisterEvent(Tick)
+			return
+		end
 		text = drawMgr:CreateText(x,y,-1,"Meepo script: NOT ACTIVE",font)
 		mp = entityList:GetMyPlayer()
 		if mp.team == LuaEntity.TEAM_RADIANT then
