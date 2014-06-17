@@ -21,7 +21,7 @@ pos = 0
 index = 1
 active = true
 angle = 0
-activated = true
+activated = false
 
 function Key(msg,code)
 	if client.console or client.chat or not init then return end
