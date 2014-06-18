@@ -190,11 +190,14 @@ function Tick(tick)
 	end
 	if sele and tick > sleep[4] then
 	local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+	local sel = mp.selection[1]
 		if n == 0 then
 			for i,v in ipairs(meepos) do
-				mp:SelectAdd(v)
+				if v ~= sel then
+					mp:SelectAdd(v)
+				end
 			end
-		else
+		elseif v ~= sel then
 			mp:SelectAdd(meepos[n])
 		end
 		sele = false
