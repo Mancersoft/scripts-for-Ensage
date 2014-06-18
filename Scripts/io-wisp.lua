@@ -11,7 +11,7 @@ registered = false
 init = false
 unreg = false
 active = false
-delay = {2400,2150,1900}
+delay = {2300,2050,1800}
 sleeptick = 0
 
 function Key(msg,code)
@@ -93,9 +93,7 @@ function Close()
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 	end
-	if text then 
-		text.visible = false
-	end
+	text = nil
 	collectgarbage("collect")
 	registered = false
 end
