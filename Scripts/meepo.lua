@@ -90,7 +90,7 @@ function Key(msg,code)
 				local sel = mp.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
 					poofall(sel)
-					if code == hotkeys[2] then
+					if code == hotkeys[2] and sel.health/sel.maxHealth >= hpPercent then
 						local spell = sel:GetAbility(2)
 						if spell.state == LuaEntityAbility.STATE_READY then
 							sel:CastAbility(spell,sel)
@@ -144,7 +144,7 @@ end
 function poofall(sel)
 	local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 	for i,v in ipairs(meepos) do
-		if v ~= sel then
+		if v ~= sel and v.health/v.maxHealth >= hpPercent then
 			local spell = v:GetAbility(2)
 			if spell.state == LuaEntityAbility.STATE_READY and not spell.abilityPhase then
 				v:CastAbility(spell,sel)
@@ -265,7 +265,7 @@ function Close()
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 	end
-	if text then text.visible = false end
+	text = nil
 	collectgarbage("collect")
 	registered = false
 end
