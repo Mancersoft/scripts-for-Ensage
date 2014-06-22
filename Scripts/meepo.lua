@@ -49,8 +49,6 @@ function Key(msg,code)
 	if activated then
 		if msg == KEY_UP then
 			if code == hotkeys[9] then
-					local sel = mp.selection[1]
-					print(sel.position)
 				hpPercent = hpPercent-0.05
 				text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
 			end
