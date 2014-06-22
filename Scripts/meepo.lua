@@ -180,7 +180,7 @@ function poofall(sel,selecti)
 			return
 		end
 	else
-		local meeposs = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+		meeposs = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 	end
 	for i,v in ipairs(meeposs) do
 		if v ~= sel and v.health/v.maxHealth >= hpPercent then
