@@ -1,6 +1,8 @@
 -- Made by Staskkk.
 
 require("libs.Utils")
+require("libs.stackpos")
+
 -- Config
 x = 50 -- x lable position
 y = 30 -- y lable position
@@ -15,7 +17,8 @@ string.byte(" "), -- Press for script activate(one time)
 string.byte("F"), -- WomboCombo with blinkdagger
 string.byte("S"), -- stop combo, working only if script activated
 219, -- use to plus 0.05 hpPercent
-221} -- use to minus 0.05 hpPercent
+221,
+string.byte("T")} -- poof selected meepo's to first selected meepo
 
 -- Code
 font = drawMgr:CreateFont("meepofont","Arial",14,500)
@@ -25,6 +28,8 @@ activated = false
 fount = {false,false,false,false,false}
 unreg = false
 com = false
+meeponumb = {}
+ordered = {}
 sleep = {0, 0, 0, 0}
 
 function Key(msg,code)
@@ -34,12 +39,18 @@ function Key(msg,code)
 		if activated then
 			text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
 		else
+			local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO})
+			for n,m in ipairs(meepos) do
+				meeponumb[m.handle] = 0
+			end
 			text.text = "Meepo script: NOT ACTIVE"
 		end
 	end
 	if activated then
 		if msg == KEY_UP then
 			if code == hotkeys[9] then
+					local sel = mp.selection[1]
+					print(sel.position)
 				hpPercent = hpPercent-0.05
 				text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
 			end
@@ -51,7 +62,7 @@ function Key(msg,code)
 				local sel = mp.selection[1]
 				local spell = sel:FindItem("item_blink")
 				if sel and sel.name == "npc_dota_hero_meepo" and spell and spell.state == LuaEntityAbility.STATE_READY then
-					poofall(sel)
+					poofall(sel,false)
 					if not eff then
 						eff = Effect(sel, "range_display")
 						eff:SetVector( 1, Vector(1200,0,0) )
@@ -89,13 +100,19 @@ function Key(msg,code)
 			if code == hotkeys[1] or code == hotkeys[2] then
 				local sel = mp.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
-					poofall(sel)
+					poofall(sel,false)
 					if code == hotkeys[2] and sel.health/sel.maxHealth >= hpPercent then
 						local spell = sel:GetAbility(2)
 						if spell.state == LuaEntityAbility.STATE_READY then
 							sel:CastAbility(spell,sel)
 						end
 					end
+				end
+			end
+			if code == hotkeys[11] then
+				local sel = mp.selection[1]
+				if sel and sel.name == "npc_dota_hero_meepo" then
+					poofall(sel,true)
 				end
 			end
 			if code == hotkeys[3] then
@@ -108,19 +125,28 @@ function Key(msg,code)
 				end
 			end
 			if code == hotkeys[4] and IsKeyDown(16) then
-				local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
-				if mp.team == LuaEntity.TEAM_RADIANT then
-					if meepos[1] then meepos[1]:AttackMove(Vector(-991,-4183,127)) end
-					if meepos[2] then meepos[2]:AttackMove(Vector(-389,-2958,127)) end
-					if meepos[3] then meepos[3]:AttackMove(Vector(1602,-3780,256)) end
-					if meepos[4] then meepos[4]:AttackMove(Vector(3184,-3400,256)) end
-					if meepos[5] then meepos[5]:AttackMove(Vector(3120,-4421,256)) end
+				local sel = mp.selection[1]
+				if not meeponumb[sel.handle] or meeponumb[sel.handle] == 0 then
+					if sel then
+						local range = 100000
+						for n,m in ipairs(routes) do 
+							local rang = GetDistance2D(sel.position,m[1])
+							local empty = true
+							local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+							for o,p in ipairs(meepos) do
+								if meeponumb[p.handle] and meeponumb[p.handle] == n then
+									empty = false
+								end
+							end
+							if m.team == mp.team and range > rang and empty then
+								range = rang
+								meeponumb[sel.handle] = n
+							end
+						end
+						sel:Move(routes[meeponumb[sel.handle]][3])
+					end
 				else
-					if meepos[1] then meepos[1]:AttackMove(Vector(1302,3396,256)) end
-					if meepos[2] then meepos[2]:AttackMove(Vector(-443,3800,256)) end
-					if meepos[3] then meepos[3]:AttackMove(Vector(-1505,2649,127)) end
-					if meepos[4] then meepos[4]:AttackMove(Vector(-3035,4534,256)) end
-					if meepos[5] then meepos[5]:AttackMove(Vector(-4389,3573,256)) end
+					meeponumb[sel.handle] = 0
 				end
 			end
 		end
@@ -130,7 +156,7 @@ function Key(msg,code)
 			local throw = true
 			for i,v in ipairs(meepos) do 
 				local spell = v:GetAbility(1)
-				if throw and spell.state == LuaEntityAbility.STATE_READY and math.sqrt((target.position.x-v.position.x)^2+(target.position.y-v.position.y)^2) <= spell.castRange then
+				if throw and spell.state == LuaEntityAbility.STATE_READY and GetDistance2D(target.position,v.position) <= spell.castRange then
 					v:CastAbility(spell,Vector(target.position.x+220*math.cos(target.rotR), target.position.y+220*math.sin(target.rotR), target.position.z))
 					v:Attack(target,true)
 					sleep[3] = GetTick() + 1500
@@ -141,17 +167,31 @@ function Key(msg,code)
 	end
 end
 
-function poofall(sel)
-	local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
-	for i,v in ipairs(meepos) do
+function poofall(sel,selecti)
+	if selecti then
+		meeposs = mp.selection
+		local retu = false
+		for i,v in ipairs(meeposs) do
+			if v.name ~= "npc_dota_hero_meepo" then
+				retu = true
+			end
+		end
+		if not meeposs or retu then
+			return
+		end
+	else
+		local meeposs = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
+	end
+	for i,v in ipairs(meeposs) do
 		if v ~= sel and v.health/v.maxHealth >= hpPercent then
 			local spell = v:GetAbility(2)
 			if spell.state == LuaEntityAbility.STATE_READY and not spell.abilityPhase then
 				v:CastAbility(spell,sel)
-				skill = spell
-				n = 0
-				sele = true
-				sleep[4] = GetTick() + 1500
+				if not selecti then
+					n = 0
+					sele = true
+					sleep[4] = GetTick() + 1500
+				end
 			end
 		end
 	end
@@ -227,13 +267,21 @@ function Tick(tick)
 	if activated then
 		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 		for i,v in ipairs(meepos) do
+			if meeponumb[v.handle] and meeponumb[v.handle] ~= 0 and not ordered[v.handle] and isPosEqual(v.position,routes[meeponumb[v.handle]][3],100) and math.floor(client.gameTime%60) == 51 then
+				ordered[v.handle] = true
+				v:Move(routes[meeponumb[v.handle]][1])
+				v:Move(routes[meeponumb[v.handle]][2],true)
+				v:Move(routes[meeponumb[v.handle]][3],true)
+			elseif ordered[v.handle] and math.floor(client.gameTime%60) < 51 then
+				ordered[v.handle] = false
+			end
 			if not fount[i] and v.health/v.maxHealth < hpPercent then
 				mp:Unselect(v)
 					v:Move(foun)
 				fount[i] = true
 			end
 			if fount[i] and v.health == v.maxHealth then
-				if math.sqrt((v.position.x-foun.x)^2+(v.position.y-foun.y)^2) <= 1200 then
+				if GetDistance2D(v.position,foun) <= 1200 then
 					local sel = mp.selection[1]
 					if sel and sel.name == "npc_dota_hero_meepo" then
 						local spell = v:GetAbility(2)
@@ -253,6 +301,10 @@ function Tick(tick)
 	end
 end
 
+function isPosEqual(v1, v2, d)
+	return (v1-v2).length <= d
+end
+
 function Load()
 	if registered then return end
 	script:RegisterEvent(EVENT_TICK,Tick)
@@ -265,7 +317,16 @@ function Close()
 		script:UnregisterEvent(Key)
 		script:UnregisterEvent(Tick)
 	end
-	text = nil
+	if text then
+		text.visible = false
+	end
+	init = false
+	activated = false
+	fount = {false,false,false,false,false}
+	unreg = false
+	com = false
+	ordered = {}
+	meeponumb = {}
 	collectgarbage("collect")
 	registered = false
 end
