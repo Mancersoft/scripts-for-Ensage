@@ -39,7 +39,7 @@ function Key(msg,code)
 	if not client.chat and msg == KEY_UP and code == Spells[1] or code == Spells[2] or 
 code == Spells[3] or code == Spells[4] or code == Spells[5] or code == Spells[6] then
 		for i,v in ipairs(sel.abilities) do
-			if list[v.name] and code == Spells[list[v.name].number] and v.state == LuaEntityAbility.STATE_READY then
+			if list2[v.name] and code == Spells[list2[v.name].number] and v.state == LuaEntityAbility.STATE_READY then
 				Skill = v
 				using = true
 			end
@@ -75,7 +75,7 @@ code == Spells[3] or code == Spells[4] or code == Spells[5] or code == Spells[6]
 				end
 
 				if msg == LBUTTON_UP and Skill and using then
-					if list[Skill.name].target == "target" then
+					if list2[Skill.name].target == "target" then
 						if IsKeyDown(16) then
 							sel:SafeCastAbility(Skill,v,true)
 						else
