@@ -4,7 +4,7 @@
 -- target = "target","area". Type of target
 -- number = 1,2,3,4,5,6. Number of hotkey you use for spell.
 
-list = {
+list2 = {
 
 	abaddon_death_coil = { target = "target", number = 1 }, -- 1
 	abaddon_aphotic_shield = { target = "target", number = 2 }, -- 2
