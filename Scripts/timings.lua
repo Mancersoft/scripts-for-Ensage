@@ -2,6 +2,11 @@
 
 require("libs.Utils")
 
+-- config
+fontsize = 20
+imagesize = 20
+distance = 15 -- Distance between font and image. All parameters in pixels.
+
 -- Code
 modifnames = {
 "modifier_ancientapparition_coldfeet_freeze",
@@ -68,7 +73,7 @@ modifnames = {
 "modifier_shadow_demon_disruption",
 "modifier_stunned"}
 
-font = drawMgr:CreateFont("timersfont","Arial",20,500)
+font = drawMgr:CreateFont("timersfont","Arial",fontsize,500)
 timers = {}
 k = {}
 registered = false
@@ -94,13 +99,13 @@ function Tick(tick)
 			if not timers[v.handle] then
 				timers[v.handle] = {}
 				timers[v.handle].time = drawMgr:CreateText(0,0,-1,"",font)
-				timers[v.handle].texture = drawMgr:CreateRect(0,0,20,20,0x000000FF)
+				timers[v.handle].texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF)
 				timers[v.handle].time.visible = false
 				timers[v.handle].texture.visible = false
 				timers[v.handle].time.entity = v
 				timers[v.handle].texture.entity = v
 				timers[v.handle].time.entityPosition = Vector(0, 0, offset)
-				timers[v.handle].texture.entityPosition = Vector(-35, 0, offset)
+				timers[v.handle].texture.entityPosition = Vector(-1*(imagesize+distance), 0, offset)
 			end
 			if s.name ~= k[v.handle] then
 				timers[v.handle].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(s.name,10))
