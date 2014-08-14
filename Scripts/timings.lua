@@ -100,7 +100,7 @@ function Tick(tick)
 				timers[v.handle].time.entity = v
 				timers[v.handle].texture.entity = v
 				timers[v.handle].time.entityPosition = Vector(0, 0, offset)
-				timers[v.handle].texture.entityPosition = Vector(-30, 0, offset)
+				timers[v.handle].texture.entityPosition = Vector(-35, 0, offset)
 			end
 			if s.name ~= k[v.handle] then
 				timers[v.handle].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(s.name,10))
