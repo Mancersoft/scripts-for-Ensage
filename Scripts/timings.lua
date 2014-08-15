@@ -96,6 +96,7 @@ modifnames = {
 {"modifier_orchid_malevolence_debuff",2},
 {"modifier_heavens_halberd_debuff",0},
 {"modifier_tinker_laser_blind",0},
+{"modifier_invoker_deafening_blast_disarm",0},
 {"modifier_keeper_of_the_light_blinding_light",0}
 }
 
