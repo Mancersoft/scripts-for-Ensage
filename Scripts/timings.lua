@@ -142,7 +142,7 @@ function Tick(tick)
 					timers[v.handle][z].texture.entityPosition = Vector(-1*(imagesize+distance), (imagesize+verticaldistance)*z, offset)
 				end
 				if s.name ~= k[v.handle][z] then
-					timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..s.texture)
+					timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(s.name,10))
 					k[v.handle][z] = s.name
 				end
 				if not timers[v.handle][z].time.visible then
