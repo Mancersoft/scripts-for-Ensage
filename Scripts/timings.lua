@@ -97,7 +97,8 @@ modifnames = {
 {"modifier_heavens_halberd_debuff",0},
 {"modifier_tinker_laser_blind",0},
 {"modifier_invoker_deafening_blast_disarm",0},
-{"modifier_keeper_of_the_light_blinding_light",0}
+{"modifier_keeper_of_the_light_blinding_light",0},
+{"modifier_life_stealer_rage",0}
 }
 
 font = drawMgr:CreateFont("timersfont","Arial",fontsize,500)
