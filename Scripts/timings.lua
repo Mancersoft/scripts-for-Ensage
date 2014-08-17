@@ -7,7 +7,7 @@ fontsize = 20
 imagesize = 20
 distance = 15 -- Distance between font and image. All parameters in pixels.
 verticaldistance = 14 -- Distance between two different modifiers.
-height = -14 -- Height of modifiers (may be positive and negative).
+height = -150 -- Height of modifiers (may be positive and negative).
 
 -- Code
 modifnames = {
