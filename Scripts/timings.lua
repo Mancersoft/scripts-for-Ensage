@@ -108,9 +108,77 @@ modifnames = {
 
 font = drawMgr:CreateFont("timersfont","Arial",fontsize,500)
 timers = {}
-k = {}
 registered = false
 sleeptick = 0
+
+function Modifadd(v,modif)
+	if v.type == LuaEntity.TYPE_HERO and not v.illusion then
+		z = 0
+		stun = false
+		while not stun and z ~= 3 do
+			z = z+1
+			x = 0
+			while not stun and x ~= #modifnames[z] do
+				x = x+1
+				if modif.name == modifnames[z][x] then
+					if timers[v.handle] and timers[v.handle][z] then
+						if timers[v.handle][z].allname == modif.name then
+							timers[v.handle][z].same = true
+						else
+							timers[v.handle][z].same = false
+						end
+						timers[v.handle][z].allname = modif.name
+					end
+					if not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].modif or modif.remainingTime > timers[v.handle][z].modif.remainingTime then
+						if not timers[v.handle] then
+							timers[v.handle] = {}
+						end
+						if not timers[v.handle][z] then
+							timers[v.handle][z] = {}
+							local offset = v.healthbarOffset+height
+							timers[v.handle][z].time = drawMgr:CreateText(0,0,-1,"",font)
+							timers[v.handle][z].texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF)
+							timers[v.handle][z].time.entity = v
+							timers[v.handle][z].texture.entity = v
+							timers[v.handle][z].time.entityPosition = Vector(0, (imagesize+verticaldistance)*z-1, offset)
+							timers[v.handle][z].texture.entityPosition = Vector(-1*(imagesize+distance), (imagesize+verticaldistance)*z-1, offset)
+						end
+						timers[v.handle][z].modif = modif
+						timers[v.handle][z].name = modif.name
+						timers[v.handle][z].time.visible = true
+						timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.name,10))
+						timers[v.handle][z].texture.visible = true
+						timers[v.handle][z].allname = modif.name
+						stun = true
+					end
+				end
+			end
+		end
+	end
+end
+
+function Modifremove(v,modif)
+	if timers[v.handle] then
+		b = 0
+		while not n and b ~= 3 do
+			b = b+1
+			if timers[v.handle][b] and timers[v.handle][b].name == modif.name then
+				if timers[v.handle][b].same then
+					timers[v.handle][b].same = false
+				else
+					n = b
+				end
+			end
+		end
+		if n then
+			timers[v.handle][n].time.visible = false
+			timers[v.handle][n].texture.visible = false
+			timers[v.handle][n].modif = nil
+			timers[v.handle][n].name = nil
+			n = nil
+		end
+	end
+end
 
 function Tick(tick)
 	if not client.connected or client.loading or sleeptick > tick or client.console or not entityList:GetMyHero() then
@@ -119,46 +187,10 @@ function Tick(tick)
 	sleeptick = tick+50
 	heroes = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
 	for i,v in ipairs(heroes) do
-		local offset = v.healthbarOffset+height
-		for z = 0,2 do
-			local f = 0
-			for d,t in ipairs(modifnames[z+1]) do
-				m = v:FindModifier(t)
-				if m and f < m.remainingTime then 
-					f = m.remainingTime
-					s = m
-				end
+		for q = 1,3 do
+			if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].modif then
+				timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
 			end
-			if s then
-				if not timers[v.handle] then
-					timers[v.handle] = {}
-					k[v.handle] = {}
-				end
-				if not timers[v.handle][z] then
-					timers[v.handle][z] = {}
-					timers[v.handle][z].time = drawMgr:CreateText(0,0,-1,"",font)
-					timers[v.handle][z].texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF)
-					timers[v.handle][z].time.visible = false
-					timers[v.handle][z].texture.visible = false
-					timers[v.handle][z].time.entity = v
-					timers[v.handle][z].texture.entity = v
-					timers[v.handle][z].time.entityPosition = Vector(0, (imagesize+verticaldistance)*z, offset)
-					timers[v.handle][z].texture.entityPosition = Vector(-1*(imagesize+distance), (imagesize+verticaldistance)*z, offset)
-				end
-				if s.name ~= k[v.handle][z] then
-					timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(s.name,10))
-					k[v.handle][z] = s.name
-				end
-				if not timers[v.handle][z].time.visible then
-					timers[v.handle][z].time.visible = true
-					timers[v.handle][z].texture.visible = true
-				end
-				timers[v.handle][z].time.text = tostring(math.floor(s.remainingTime*10)/10)
-			elseif timers[v.handle] and timers[v.handle][z] and timers[v.handle][z].time.visible then
-				timers[v.handle][z].time.visible = false
-				timers[v.handle][z].texture.visible = false
-			end
-			s = nil
 		end
 	end
 end
@@ -166,11 +198,15 @@ end
 function Load()
 	if registered then return end
 	script:RegisterEvent(EVENT_TICK,Tick)
+	script:RegisterEvent(EVENT_MODIFIER_ADD,Modifadd)
+	script:RegisterEvent(EVENT_MODIFIER_REMOVE,Modifremove)
 	registered = true
 end
 
 function Close()
 	script:UnregisterEvent(Tick)
+	script:UnregisterEvent(Modifadd)
+	script:UnregisterEvent(Modifremove)
 	collectgarbage("collect")
 	registered = false
 end
