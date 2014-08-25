@@ -150,7 +150,7 @@ function Modifremove(v,modif)
 		b = 0
 		while not n and b ~= 3 do
 			b = b+1
-			if timers[v.handle][b] and timers[v.handle][b].modif and timers[v.handle][b].modif.dieTime == modif.dieTime then
+			if timers[v.handle][b] and timers[v.handle][b].modif and timers[v.handle][b].modif.name == modif.name and timers[v.handle][b].modif.dieTime == modif.dieTime then
 				n = b
 			end
 		end
