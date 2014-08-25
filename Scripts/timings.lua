@@ -96,7 +96,7 @@ modifnames = {
 "modifier_bloodseeker_bloodrage",
 "modifier_silence",
 --"modifier_disruptor_static_storm",
-"modifier_doom_bringer_doom",
+--"modifier_doom_bringer_doom",
 "modifier_earth_spirit_boulder_smash_silence",
 "modifier_night_stalker_crippling_fear",
 --"modifier_riki_smoke_screen",
