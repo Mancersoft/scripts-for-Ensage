@@ -134,6 +134,7 @@ function Modifadd(v,modif)
 						timers[v.handle][z].time.entityPosition = Vector(0, (imagesize+verticaldistance)*z-1, offset)
 						timers[v.handle][z].texture.entityPosition = Vector(-1*(imagesize+distance), (imagesize+verticaldistance)*z-1, offset)
 					end
+					timers[v.handle][z].entity = v
 					timers[v.handle][z].modif = modif
 					timers[v.handle][z].dieTime = modif.dieTime
 					timers[v.handle][z].time.visible = true
@@ -155,7 +156,7 @@ function Tick(tick)
 	for i,v in ipairs(heroes) do
 		for q = 1,3 do
 			if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].time.visible then
-				if timers[v.handle][q].dieTime > client.totalGameTime then
+				if timers[v.handle][q].entity.alive and timers[v.handle][q].dieTime > client.totalGameTime then
 					timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
 				else
 					timers[v.handle][q].time.visible = false
