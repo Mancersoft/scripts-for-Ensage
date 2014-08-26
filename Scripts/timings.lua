@@ -120,7 +120,7 @@ function Modifadd(v,modif)
 			x = 0
 			while not stun and x ~= #modifnames[z] do
 				x = x+1
-				if modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].time.visible or modif.remainingTime > timers[v.handle][z].modif.remainingTime) then
+				if modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].time.visible or (timers[v.handle][z].dieTime > client.totalGameTime and modif.remainingTime > timers[v.handle][z].modif.remainingTime)) then
 					if not timers[v.handle] then
 						timers[v.handle] = {}
 					end
