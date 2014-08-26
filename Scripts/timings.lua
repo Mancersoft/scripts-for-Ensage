@@ -96,7 +96,7 @@ modifnames = {
 "modifier_bloodseeker_bloodrage",
 "modifier_silence",
 --"modifier_disruptor_static_storm",
---"modifier_doom_bringer_doom",
+"modifier_doom_bringer_doom",
 "modifier_earth_spirit_boulder_smash_silence",
 "modifier_night_stalker_crippling_fear",
 --"modifier_riki_smoke_screen",
@@ -120,7 +120,8 @@ function Modifadd(v,modif)
 			x = 0
 			while not stun and x ~= #modifnames[z] do
 				x = x+1
-				if modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].modif or modif.remainingTime > timers[v.handle][z].modif.remainingTime) then
+				if modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].visible or modif.remainingTime > timers[v.handle][z].modif.remainingTime) 
+				then
 					if not timers[v.handle] then
 						timers[v.handle] = {}
 					end
@@ -135,30 +136,14 @@ function Modifadd(v,modif)
 						timers[v.handle][z].texture.entityPosition = Vector(-1*(imagesize+distance), (imagesize+verticaldistance)*z-1, offset)
 					end
 					timers[v.handle][z].modif = modif
+					timers[v.handle][z].dieTime = modif.dieTime
+					timers[v.handle][z].visible = true
 					timers[v.handle][z].time.visible = true
 					timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.name,10))
 					timers[v.handle][z].texture.visible = true
 					stun = true
 				end
 			end
-		end
-	end
-end
-
-function Modifremove(v,modif)
-	if timers[v.handle] then
-		b = 0
-		while not n and b ~= 3 do
-			b = b+1
-			if timers[v.handle][b] and timers[v.handle][b].modif and timers[v.handle][b].modif.name == modif.name and timers[v.handle][b].modif.dieTime == modif.dieTime then
-				n = b
-			end
-		end
-		if n then
-			timers[v.handle][n].time.visible = false
-			timers[v.handle][n].texture.visible = false
-			timers[v.handle][n].modif = nil
-			n = nil
 		end
 	end
 end
@@ -171,8 +156,15 @@ function Tick(tick)
 	heroes = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
 	for i,v in ipairs(heroes) do
 		for q = 1,3 do
-			if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].modif then
-				timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
+			if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].visible then
+				print(timers[v.handle][q].dieTime,client.totalGameTime)
+				if timers[v.handle][q].dieTime > client.totalGameTime then
+					timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
+				else
+					timers[v.handle][q].time.visible = false
+					timers[v.handle][q].texture.visible = false
+					timers[v.handle][q].visible = false
+				end
 			end
 		end
 	end
@@ -182,14 +174,12 @@ function Load()
 	if registered then return end
 	script:RegisterEvent(EVENT_TICK,Tick)
 	script:RegisterEvent(EVENT_MODIFIER_ADD,Modifadd)
-	script:RegisterEvent(EVENT_MODIFIER_REMOVE,Modifremove)
 	registered = true
 end
 
 function Close()
 	script:UnregisterEvent(Tick)
 	script:UnregisterEvent(Modifadd)
-	script:UnregisterEvent(Modifremove)
 	collectgarbage("collect")
 	registered = false
 end
