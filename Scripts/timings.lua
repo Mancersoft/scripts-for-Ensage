@@ -156,7 +156,7 @@ function Tick(tick)
 	for i,v in ipairs(heroes) do
 		for q = 1,3 do
 			if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].time.visible then
-				if timers[v.handle][q].entity.alive and timers[v.handle][q].dieTime > client.totalGameTime then
+				if timers[v.handle][q].entity.alive and timers[v.handle][q].entity.visible and timers[v.handle][q].dieTime > client.totalGameTime then
 					timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
 				else
 					timers[v.handle][q].time.visible = false
