@@ -1,18 +1,61 @@
 -- Made by Sophylax for old version. Reworked by Staskkk for New version.
 
 require("libs.Utils")
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("combo1", "Z")
+config:SetParameter("combo2", "X")
+config:SetParameter("combo3", "C")
+config:SetParameter("combo4", "T")
+config:SetParameter("combo5", "V")
+config:SetParameter("combo6", "B")
+config:SetParameter("a1qqq", "1")
+config:SetParameter("a2qqw", "2")
+config:SetParameter("a3qww", "3")
+config:SetParameter("a4www", "4")
+config:SetParameter("a5wwe", "5")
+config:SetParameter("a6wee", "6")
+config:SetParameter("a7eee", "7")
+config:SetParameter("a8qee", "8")
+config:SetParameter("a9qqe", "9")
+config:SetParameter("a0qwe", "0")
+config:SetParameter("Xcord", 50)
+config:SetParameter("Ycord", 30)
+config:Load()
+
+function numpad( strkey )
+        if strkey == "n0" then return 96
+                elseif strkey == "n1" then return 97
+                elseif strkey == "n2" then return 98
+                elseif strkey == "n3" then return 99
+                elseif strkey == "n4" then return 100
+                elseif strkey == "n5" then return 101
+                elseif strkey == "n6" then return 102
+                elseif strkey == "n7" then return 103
+                elseif strkey == "n8" then return 104
+                elseif strkey == "n9" then return 105
+                elseif strkey == "n*" then return 106
+                elseif strkey == "n+" then return 107
+                elseif strkey == "n-" then return 109
+                elseif strkey == "n." then return 110
+                elseif strkey == "n/" then return 111
+                elseif string.len(strkey) > 2 or strkey == "" then return 124
+                else return string.byte( strkey )
+        end
+end
 
 -- config
-x = 50
-y = 30
-combokey = {"Z","X","C","T","V","B"}
+x = config.Xcord
+y = config.Ycord
+combokey = {numpad(config.combo1),numpad(config.combo2),numpad(config.combo3),numpad(config.combo4),numpad(config.combo5),numpad(config.combo6)}
 -- 1 - TotalCombo: Tornado - EMP - Chaos Meteor - Deafening Blast - Cold Snap - Forge Spirit - Sun Strike - Ice Wall
 -- 2 - TornadoEMPCombo: Tornado - EMP
 -- 3 - TornadoMeteorWallCombo: Tornado - Chaos Meteor - Ice Wall
 -- 4 - MeteorBlastCombo: Chaos Meteor - Deafening Blast
 -- 5 - SnapDPSCombo: Cold Snap - Forge Spirit - Alacrity
 -- 6 - EulSSMeteorBlast Eul - Sun Strike - Chaos Meteor - Deafening Blast
-hotkey = {qqq="1", qqw="2", qww="3", www="4", wwe="5", wee="6", eee="7", qee="8", qqe="9", qwe="0"}
+hotkey = {numpad(config.a1qqq), numpad(config.a2qqw), numpad(config.a3qww), numpad(config.a4www), numpad(config.a5wwe), numpad(config.a6wee), numpad(config.a7eee), numpad(config.a8qee), numpad(config.a9qqe), numpad(config.a0qwe)}
 -- "Q" with space = 3 Quas, "W" with space = 3 Wex, "E" with space = 3 Exort
 -- Tab - shows you combos hotkeys
 range = 1000
@@ -87,7 +130,7 @@ function StopCombo( )
 end
  
 -------------------------- COMBO SETTINGS --------------------------
- 
+
 function Tick( tick )
  
         if not client.connected or client.loading or client.console or not entityList:GetMyHero() then
@@ -485,22 +528,22 @@ function Key( msg, code )
         end
         if chatting[1] then return end
        
-                if code == string.byte(hotkey.qqq) then Keys[1] = (msg == KEY_DOWN)
-        elseif code == string.byte(hotkey.qqw) then Keys[2] = (msg == KEY_DOWN)
-        elseif code == string.byte(hotkey.qww) then Keys[3] = (msg == KEY_DOWN)
-        elseif code == string.byte(hotkey.www) then Keys[4] = (msg == KEY_DOWN)
-        elseif code == string.byte(hotkey.wwe) then Keys[5] = (msg == KEY_DOWN)    
-        elseif code == string.byte(hotkey.wee) then Keys[6] = (msg == KEY_DOWN)
-        elseif code == string.byte(hotkey.eee) then Keys[7] = (msg == KEY_DOWN)
-        elseif code == string.byte(hotkey.qee) then Keys[8] = (msg == KEY_DOWN)
-        elseif code == string.byte(hotkey.qqe) then Keys[9] = (msg == KEY_DOWN)
-        elseif code == string.byte(hotkey.qwe) then Keys[10] = (msg == KEY_DOWN)    
-        elseif code == string.byte(combokey[1]) then Keys[11] = (msg == KEY_DOWN)
-        elseif code == string.byte(combokey[2]) then Keys[12] = (msg == KEY_DOWN)
-        elseif code == string.byte(combokey[3]) then Keys[13] = (msg == KEY_DOWN)
-        elseif code == string.byte(combokey[4]) then Keys[14] = (msg == KEY_DOWN)
-        elseif code == string.byte(combokey[5]) then Keys[20] = (msg == KEY_DOWN)
-        elseif code == string.byte(combokey[6]) then Keys[21] = (msg == KEY_DOWN)   
+                if code == hotkey.qqq then Keys[1] = (msg == KEY_DOWN)
+        elseif code == hotkey.qqw then Keys[2] = (msg == KEY_DOWN)
+        elseif code == hotkey.qww then Keys[3] = (msg == KEY_DOWN)
+        elseif code == hotkey.www then Keys[4] = (msg == KEY_DOWN)
+        elseif code == hotkey.wwe then Keys[5] = (msg == KEY_DOWN)    
+        elseif code == hotkey.wee then Keys[6] = (msg == KEY_DOWN)
+        elseif code == hotkey.eee then Keys[7] = (msg == KEY_DOWN)
+        elseif code == hotkey.qee then Keys[8] = (msg == KEY_DOWN)
+        elseif code == hotkey.qqe then Keys[9] = (msg == KEY_DOWN)
+        elseif code == hotkey.qwe then Keys[10] = (msg == KEY_DOWN)    
+        elseif code == combokey[1] then Keys[11] = (msg == KEY_DOWN)
+        elseif code == combokey[2] then Keys[12] = (msg == KEY_DOWN)
+        elseif code == combokey[3] then Keys[13] = (msg == KEY_DOWN)
+        elseif code == combokey[4] then Keys[14] = (msg == KEY_DOWN)
+        elseif code == combokey[5] then Keys[20] = (msg == KEY_DOWN)
+        elseif code == combokey[6] then Keys[21] = (msg == KEY_DOWN)   
         elseif code == string.byte(" ") then Keys[15] = (msg == KEY_DOWN)      
         elseif code == string.byte("Q") then Keys[16] = (msg == KEY_DOWN)      
         elseif code == string.byte("W") then Keys[17] = (msg == KEY_DOWN)      
