@@ -1,13 +1,23 @@
 -- Made by Staskkk.
 
 require("libs.Utils")
+-- Config
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("Fontsize", 20)
+config:SetParameter("Imagesize", 20)
+config:SetParameter("Distancefontimage", 15)
+config:SetParameter("Verticaldistance", 14)
+config:SetParameter("Antiheight", 150)
+config:Load()
 
 -- config
-fontsize = 20
-imagesize = 20
-distance = 15 -- Distance between font and image. All parameters in pixels.
-verticaldistance = 14 -- Distance between two different modifiers.
-height = -150 -- Height of modifiers (may be positive and negative).
+fontsize = config.Fontsize
+imagesize = config.Imagesize
+distance = config.Distancefontimage -- Distance between font and image. All parameters in pixels.
+verticaldistance = config.Verticaldistance -- Distance between two different modifiers.
+height = -1*config.Antiheight -- Height of modifiers (may be positive and negative).
 
 -- Code
 modifnames = {
@@ -48,9 +58,7 @@ modifnames = {
 "modifier_earth_spirit_boulder_smash",
 "modifier_earthshaker_fissure_stun",
 "modifier_elder_titan_echo_stomp",
---"modifier_enigma_black_hole_pull",
 "modifier_faceless_void_timelock_freeze",
---"modifier_faceless_void_chronosphere_freeze",
 "modifier_invoker_cold_snap_freeze",
 "modifier_invoker_deafening_blast_knockback",
 "modifier_invoker_tornado",
@@ -94,11 +102,9 @@ modifnames = {
 {
 "modifier_bloodseeker_bloodrage",
 "modifier_silence",
---"modifier_disruptor_static_storm",
 "modifier_doom_bringer_doom",
 "modifier_earth_spirit_boulder_smash_silence",
 "modifier_night_stalker_crippling_fear",
---"modifier_riki_smoke_screen",
 "modifier_silencer_global_silence",
 "modifier_skywrath_mage_ancient_seal",
 "modifier_orchid_malevolence_debuff"
@@ -107,11 +113,12 @@ modifnames = {
 
 font = drawMgr:CreateFont("timersfont","Arial",fontsize,500)
 timers = {}
+entities = {}
 registered = false
 sleeptick = 0
 
 function Modifadd(v,modif)
-	if v.type == LuaEntity.TYPE_HERO and not v.illusion then
+	if (v.type == LuaEntity.TYPE_HERO and not v.illusion) or (v.type == LuaEntity.TYPE_NPC and v.modifiers and (v.modifiers[1].name == "modifier_enigma_black_hole_thinker" or v.modifiers[1].name == "modifier_disruptor_static_storm_thinker" or v.modifiers[1].name == "modifier_riki_smoke_screen_thinker" or v.modifiers[1].name == "modifier_faceless_void_chronosphere_selfbuff" or v.modifiers[1].name == "modifier_phoenix_sun")) then
 		z = 0
 		stun = false
 		while not stun and z ~= 3 do
@@ -119,7 +126,7 @@ function Modifadd(v,modif)
 			x = 0
 			while not stun and x ~= #modifnames[z] do
 				x = x+1
-				if modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].time.visible or (timers[v.handle][z].dieTime > client.totalGameTime and modif.remainingTime > timers[v.handle][z].modif.remainingTime)) then
+				if v.type == LuaEntity.TYPE_NPC or (modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].time.visible or (timers[v.handle][z].dieTime > client.totalGameTime and modif.remainingTime > timers[v.handle][z].modif.remainingTime))) then
 					if not timers[v.handle] then
 						timers[v.handle] = {}
 					end
@@ -151,16 +158,24 @@ function Tick(tick)
 		return
 	end
 	sleeptick = tick+50
-	heroes = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
-	for i,v in ipairs(heroes) do
-		for q = 1,3 do
-			if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].time.visible then
-				if timers[v.handle][q].entity.alive and timers[v.handle][q].entity.visible and timers[v.handle][q].dieTime > client.totalGameTime then
-					timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
-				else
-					timers[v.handle][q].time.visible = false
-					timers[v.handle][q].texture.visible = false
-					timers[v.handle][q].visible = false
+	entities[1] = entityList:GetEntities({type=LuaEntity.TYPE_NPC,classId = CDOTA_BaseNPC})
+	entities[2] = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
+	entities[3] = entityList:GetEntities({type=LuaEntity.TYPE_NPC,classId = CDOTA_BaseNPC_Additive})
+	for _,w in ipairs(entities) do
+		for i,v in ipairs(w) do
+			for q = 1,3 do
+				if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].time.visible then
+					if timers[v.handle][q].entity.alive and timers[v.handle][q].entity.visible and (timers[v.handle][q].dieTime > client.totalGameTime or _ == 1) then
+						if timers[v.handle][q].modif.name ~= "modifier_enigma_black_hole_thinker" then
+							timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
+						else
+							timers[v.handle][q].time.text = tostring(math.floor((4-timers[v.handle][q].modif.elapsedTime)*10)/10)
+						end
+					else
+						timers[v.handle][q].time.visible = false
+						timers[v.handle][q].texture.visible = false
+						timers[v.handle][q].visible = false
+					end
 				end
 			end
 		end
