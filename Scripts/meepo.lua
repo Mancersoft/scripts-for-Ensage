@@ -2,23 +2,62 @@
 
 require("libs.Utils")
 require("libs.stackpos")
+-- Config
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("poofall", "R")
+config:SetParameter("poofallplusself", "E")
+config:SetParameter("pooffontain", "D")
+config:SetParameter("junglewithshift", "F")
+config:SetParameter("earthbind", "Q")
+config:SetParameter("activate", "space")
+config:SetParameter("WomboCombo", "F")
+config:SetParameter("stopcombo", "S")
+config:SetParameter("poofseltofirstsel", "T")
+config:SetParameter("hpPercent", 0.50)
+config:SetParameter("Xcord", 50)
+config:SetParameter("Ycord", 30)
+config:Load()
+
+function numpad( strkey )
+        if strkey == "n0" then return 96
+                elseif strkey == "n1" then return 97
+                elseif strkey == "n2" then return 98
+                elseif strkey == "n3" then return 99
+                elseif strkey == "n4" then return 100
+                elseif strkey == "n5" then return 101
+                elseif strkey == "n6" then return 102
+                elseif strkey == "n7" then return 103
+                elseif strkey == "n8" then return 104
+                elseif strkey == "n9" then return 105
+                elseif strkey == "n*" then return 106
+                elseif strkey == "n+" then return 107
+                elseif strkey == "n-" then return 109
+                elseif strkey == "n." then return 110
+                elseif strkey == "n/" then return 111
+                elseif strkey == "space" then return 32
+                elseif string.len(strkey) > 2 or strkey == "" then return 124
+                else return string.byte( strkey )
+        end
+end
 
 -- Config
-x = 50 -- x lable position
-y = 30 -- y lable position
-hpPercent = 0.50 -- % when meepo go to base for heal
+x = config.Xcord -- x lable position
+y = config.Ycord -- y lable position
+hpPercent = config.hpPercent -- % when meepo go to base for heal
 hotkeys = {
-string.byte("R"), -- poof all meepo's to selected meepo
-string.byte("E"), -- poof all meepo's to selected meepo and selected meepo poof on hisself
-string.byte("D"), -- use poof to fountain side
-string.byte("F"), -- with Shift
-string.byte("Q"), -- all meepos using his net to catch enemy ,ur mouse cursor must be on enemy hero, it using net one by one.
-string.byte(" "), -- Press for script activate(one time)
-string.byte("F"), -- WomboCombo with blinkdagger
-string.byte("S"), -- stop combo, working only if script activated
+numpad( config.poofall ), -- poof all meepo's to selected meepo
+numpad( config.poofallplusself ), -- poof all meepo's to selected meepo and selected meepo poof on hisself
+numpad( config.pooffontain ), -- use poof to fountain side
+numpad( config.junglewithshift ), -- Jungle with Shift
+numpad( config.earthbind ), -- all meepos using his net to catch enemy ,ur mouse cursor must be on enemy hero, it using net one by one.
+numpad( config.activate ), -- Press for script activate(one time)
+numpad( config.WomboCombo ), -- WomboCombo with blinkdagger
+numpad( config.stopcombo ), -- stop combo, working only if script activated
 219, -- use to plus 0.05 hpPercent
 221,
-string.byte("T")} -- poof selected meepo's to first selected meepo
+numpad( config.poofseltofirstsel )} -- poof selected meepo's to first selected meepo
 
 -- Code
 font = drawMgr:CreateFont("meepofont","Arial",14,500)
