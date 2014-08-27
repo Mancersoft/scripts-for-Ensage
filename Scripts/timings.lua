@@ -31,7 +31,6 @@ modifnames = {
 "modifier_windrunner_windrun",
 "modifier_brewmaster_primal_split",
 "modifier_puck_phase_shift",
-"modifier_sniper_assassinate",
 "modifier_heavens_halberd_debuff",
 "modifier_tinker_laser_blind",
 "modifier_invoker_deafening_blast_disarm",
