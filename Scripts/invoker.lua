@@ -40,6 +40,7 @@ function numpad( strkey )
                 elseif strkey == "n-" then return 109
                 elseif strkey == "n." then return 110
                 elseif strkey == "n/" then return 111
+                elseif strkey == "space" then return 32
                 elseif string.len(strkey) > 2 or strkey == "" then return 124
                 else return string.byte( strkey )
         end
