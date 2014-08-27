@@ -1,9 +1,39 @@
 -- Made by Staskkk.
 
 -- Config
-x = 50 -- x lable position
-y = 40 -- y lable position
-hotkey = string.byte("T") -- hotkey for combo relocate return
+require("libs.ScriptConfig")
+
+config = ScriptConfig.new()
+config:SetParameter("savemate", "T")
+config:SetParameter("Xcord", 50)
+config:SetParameter("Ycord", 40)
+config:Load()
+
+function numpad( strkey )
+        if strkey == "n0" then return 96
+                elseif strkey == "n1" then return 97
+                elseif strkey == "n2" then return 98
+                elseif strkey == "n3" then return 99
+                elseif strkey == "n4" then return 100
+                elseif strkey == "n5" then return 101
+                elseif strkey == "n6" then return 102
+                elseif strkey == "n7" then return 103
+                elseif strkey == "n8" then return 104
+                elseif strkey == "n9" then return 105
+                elseif strkey == "n*" then return 106
+                elseif strkey == "n+" then return 107
+                elseif strkey == "n-" then return 109
+                elseif strkey == "n." then return 110
+                elseif strkey == "n/" then return 111
+                elseif string.len(strkey) > 2 or strkey == "" then return 124
+                else return string.byte( strkey )
+        end
+end
+
+-- config
+x = config.Xcord -- x lable position
+y = config.Ycord -- y lable position
+hotkey = numpad(config.savemate) -- hotkey for combo relocate return
 
 -- Code
 font = drawMgr:CreateFont("iofont","Arial",14,500)
