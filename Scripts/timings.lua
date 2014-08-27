@@ -144,7 +144,11 @@ function Modifadd(v,modif)
 					timers[v.handle][z].modif = modif
 					timers[v.handle][z].dieTime = modif.dieTime
 					timers[v.handle][z].time.visible = true
-					timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.name,10))
+					if v.type ~= LuaEntity.TYPE_NPC then
+						timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.name,10))
+					else
+						timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..modif.texture)
+					end
 					timers[v.handle][z].texture.visible = true
 					stun = true
 				end
