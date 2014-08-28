@@ -1,5 +1,7 @@
 -- Made by Staskkk.
 
+require("libs.Utils")
+
 -- Config
 require("libs.ScriptConfig")
 
@@ -50,7 +52,7 @@ function Key(msg,code)
 	if msg == KEY_UP and code == hotkey and not active then
 		local spell = me:GetAbility(7)
 		if spell.state == LuaEntityAbility.STATE_READY then
-			mp:UseAbility(spell,foun)
+			me:CastAbility(spell,foun)
 			eff = Effect(me, "range_display")
 			eff:SetVector(1, Vector(1800, 0, 0))
 			sleeptick = GetTick() + delay[spell.level]
