@@ -126,7 +126,7 @@ function Modifadd(v,modif)
 			x = 0
 			while not stun and x ~= #modifnames[z] do
 				x = x+1
-				if v.type == LuaEntity.TYPE_NPC or (modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].time.visible or (timers[v.handle][z].dieTime > client.totalGameTime and modif.remainingTime > timers[v.handle][z].modif.remainingTime))) then
+				if v.type == LuaEntity.TYPE_NPC or (modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].time.visible or (timers[v.handle][z].entity:FindModifier(timers[v.handle][z].name) and modif.remainingTime > timers[v.handle][z].modif.remainingTime))) then
 					if not timers[v.handle] then
 						timers[v.handle] = {}
 					end
@@ -142,7 +142,7 @@ function Modifadd(v,modif)
 					end
 					timers[v.handle][z].entity = v
 					timers[v.handle][z].modif = modif
-					timers[v.handle][z].dieTime = modif.dieTime
+					timers[v.handle][z].name = modif.name
 					timers[v.handle][z].time.visible = true
 					if v.type ~= LuaEntity.TYPE_NPC then
 						timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.name,10))
@@ -169,7 +169,7 @@ function Tick(tick)
 		for i,v in ipairs(w) do
 			for q = 1,3 do
 				if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].time.visible then
-					if timers[v.handle][q].entity.alive and timers[v.handle][q].entity.visible and (timers[v.handle][q].dieTime > client.totalGameTime or _ == 1) then
+					if timers[v.handle][q].entity:FindModifier(timers[v.handle][q].name) then
 						if timers[v.handle][q].modif.name ~= "modifier_enigma_black_hole_thinker" then
 							timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
 						else
