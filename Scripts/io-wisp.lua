@@ -39,13 +39,6 @@ y = config.Ycord -- y lable position
 hotkey = numpad(config.savemate) -- hotkey for combo relocate return
 
 -- Code
-font = drawMgr:CreateFont("iofont","Arial",14,500)
-registered = false
-init = false
-unreg = false
-active = false
-delay = {2300,2050,1800}
-sleeptick = 0
 
 function Key(msg,code)
 	if client.console or client.chat or not init then return end
@@ -116,6 +109,13 @@ end
 
 function Load()
 	if registered then return end
+font = drawMgr:CreateFont("iofont","Arial",14,500)
+registered = false
+init = false
+unreg = false
+active = false
+delay = {2300,2050,1800}
+sleeptick = 0
 	script:RegisterEvent(EVENT_TICK,Tick)
 	script:RegisterEvent(EVENT_KEY,Key)
 	registered = true
