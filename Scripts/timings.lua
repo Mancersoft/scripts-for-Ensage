@@ -45,7 +45,8 @@ modifnames = {
 "modifier_tinker_laser_blind",
 "modifier_invoker_deafening_blast_disarm",
 "modifier_keeper_of_the_light_blinding_light",
-"modifier_life_stealer_rage"
+"modifier_life_stealer_rage",
+"modifier_bloodseeker_rupture"--
 },
 {
 "modifier_drowranger_wave_of_silence_knockback",
@@ -117,6 +118,22 @@ entities = {}
 registered = false
 sleeptick = 0
 
+function regi(v,z)
+	if not timers[v.handle] then
+		timers[v.handle] = {}
+	end
+	if not timers[v.handle][z] then
+		timers[v.handle][z] = {}
+		local offset = v.healthbarOffset+height
+		timers[v.handle][z].time = drawMgr:CreateText(0,0,-1,"",font)
+		timers[v.handle][z].texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF)
+		timers[v.handle][z].time.entity = v
+		timers[v.handle][z].texture.entity = v
+		timers[v.handle][z].time.entityPosition = Vector(0, (imagesize+verticaldistance)*z-1, offset)
+		timers[v.handle][z].texture.entityPosition = Vector(-1*(imagesize+distance), (imagesize+verticaldistance)*z-1, offset)
+	end
+end
+
 function Modifadd(v,modif)
 	if (v.type == LuaEntity.TYPE_HERO and not v.illusion) or (v.type == LuaEntity.TYPE_NPC and v.modifiers and (v.modifiers[1].name == "modifier_enigma_black_hole_thinker" or v.modifiers[1].name == "modifier_disruptor_static_storm_thinker" or v.modifiers[1].name == "modifier_riki_smoke_screen_thinker" or v.modifiers[1].name == "modifier_faceless_void_chronosphere_selfbuff" or v.modifiers[1].name == "modifier_phoenix_sun")) then
 		z = 0
@@ -127,19 +144,7 @@ function Modifadd(v,modif)
 			while not stun and x ~= #modifnames[z] do
 				x = x+1
 				if v.type == LuaEntity.TYPE_NPC or (modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].time.visible or (timers[v.handle][z].entity:FindModifier(timers[v.handle][z].name) and modif.remainingTime > timers[v.handle][z].modif.remainingTime))) then
-					if not timers[v.handle] then
-						timers[v.handle] = {}
-					end
-					if not timers[v.handle][z] then
-						timers[v.handle][z] = {}
-						local offset = v.healthbarOffset+height
-						timers[v.handle][z].time = drawMgr:CreateText(0,0,-1,"",font)
-						timers[v.handle][z].texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF)
-						timers[v.handle][z].time.entity = v
-						timers[v.handle][z].texture.entity = v
-						timers[v.handle][z].time.entityPosition = Vector(0, (imagesize+verticaldistance)*z-1, offset)
-						timers[v.handle][z].texture.entityPosition = Vector(-1*(imagesize+distance), (imagesize+verticaldistance)*z-1, offset)
-					end
+					regi(v,z)
 					timers[v.handle][z].entity = v
 					timers[v.handle][z].modif = modif
 					timers[v.handle][z].name = modif.name
@@ -169,8 +174,17 @@ function Tick(tick)
 		for i,v in ipairs(w) do
 			for q = 1,3 do
 				if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].time.visible then
-					if timers[v.handle][q].entity:FindModifier(timers[v.handle][q].name) then
-						if timers[v.handle][q].modif.name ~= "modifier_enigma_black_hole_thinker" then
+					if not timers[v.handle][q].name then
+						if not v.alive then
+							timers[v.handle][q].time.text = tostring(math.floor(v.respawnTime*10)/10)
+						else
+							timers[v.handle][q].time.visible = false
+							timers[v.handle][q].texture.visible = false
+							timers[v.handle][q].visible = false
+							timers[v.handle][q].name = "1"
+						end
+					elseif timers[v.handle][q].entity:FindModifier(timers[v.handle][q].name) then
+						if timers[v.handle][q].name ~= "modifier_enigma_black_hole_thinker" then
 							timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
 						else
 							timers[v.handle][q].time.text = tostring(math.floor((4-timers[v.handle][q].modif.elapsedTime)*10)/10)
@@ -181,6 +195,15 @@ function Tick(tick)
 						timers[v.handle][q].visible = false
 					end
 				end
+			end
+			if v.reincarnating then
+				regi(v,3)
+				timers[v.handle][3].entity = v
+				timers[v.handle][3].modif = nil
+				timers[v.handle][3].name = nil
+				timers[v.handle][3].time.visible = true
+				timers[v.handle][3].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/skeleton_king_reincarnate_slow")
+				timers[v.handle][3].texture.visible = true
 			end
 		end
 	end
