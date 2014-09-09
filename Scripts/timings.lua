@@ -46,7 +46,7 @@ modifnames = {
 "modifier_invoker_deafening_blast_disarm",
 "modifier_keeper_of_the_light_blinding_light",
 "modifier_life_stealer_rage",
-"modifier_bloodseeker_rupture"--
+"modifier_bloodseeker_rupture"
 },
 {
 "modifier_drowranger_wave_of_silence_knockback",
