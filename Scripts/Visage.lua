@@ -107,7 +107,7 @@ font = drawMgr:CreateFont("visagefont","Arial",14,500)
 registered = false
 init = false
 unreg = false
-active = true
+active = false
 sleeptick = 0
 	script:RegisterEvent(EVENT_TICK,Tick)
 	script:RegisterEvent(EVENT_KEY,Key)
