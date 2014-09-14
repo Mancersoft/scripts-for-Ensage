@@ -91,8 +91,12 @@ function Tick(tick)
 				end
 			end
 		end
+		print("ok")
 		familiars = entityList:FindEntities({classId = CDOTA_Unit_VisageFamiliar, alive = true})
 		for i,v in ipairs(familiars) do
+			for g,h in ipairs(v.modifiers) do
+				print(h.name)
+			end
 			local spell = v:GetAbility(1)
 			if v.health*(1+v.dmgResist) <= 0.3*v.maxHealth*(1+v.dmgResist) and spell.state ~= LuaEntityAbility.STATE_COOLDOWN then
 				v:CastAbility(spell)
@@ -107,7 +111,7 @@ font = drawMgr:CreateFont("visagefont","Arial",14,500)
 registered = false
 init = false
 unreg = false
-active = false
+active = true
 sleeptick = 0
 	script:RegisterEvent(EVENT_TICK,Tick)
 	script:RegisterEvent(EVENT_KEY,Key)
