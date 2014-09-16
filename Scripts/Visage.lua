@@ -10,6 +10,8 @@ config:SetParameter("Activate", "T")
 config:SetParameter("Xcord", 50)
 config:SetParameter("Ycord", 40)
 config:SetParameter("HpPercentFamiliars", 0.30)
+config:SetParameter("RangeForStun", 400)
+config:SetParameter("TimeForStun", 3)
 config:Load()
 
 function numpad( strkey )
@@ -39,6 +41,12 @@ x = config.Xcord -- x lable position
 y = config.Ycord -- y lable position
 hotkey = numpad(config.Activate) -- hotkey for combo relocate return
 hpPercent = config.HpPercentFamiliars
+range = config.RangeForStun
+if config.TimeForStun > 15 then
+	stuntime = 15
+else
+	stuntime = config.TimeForStun
+end
 
 -- Code
 
@@ -91,15 +99,65 @@ function Tick(tick)
 				end
 			end
 		end
-		print("ok")
 		familiars = entityList:FindEntities({classId = CDOTA_Unit_VisageFamiliar, alive = true})
 		for i,v in ipairs(familiars) do
-			for g,h in ipairs(v.modifiers) do
-				print(h.name)
+			if not famils[v.handle] then
+				famils[v.handle] = {}
+				famils[v.handle].vec = Vector(0,0,0)
 			end
 			local spell = v:GetAbility(1)
 			if v.health*(1+v.dmgResist) <= 0.3*v.maxHealth*(1+v.dmgResist) and spell.state ~= LuaEntityAbility.STATE_COOLDOWN then
 				v:CastAbility(spell)
+			end
+			if famils[v.handle].enemy and v:FindModifier("modifier_visage_summon_familiars_stone_form_buff") then
+				famils[v.handle].enemy = nil
+				famils[v.handle].stop = 0
+				famils[v.handle].vec = Vector(0,0,0)
+				famils[v.handle].sleept = 0
+			else
+				local modif = v:FindModifier("modifier_visage_summon_familiars_damage_charge")
+				if famils[v.handle].enemy or (modif and modif.stacks == 0) then
+					local enemies = entityList:FindEntities({type = LuaEntity.TYPE_HERO, team = (5-me.team), alive = true, visible = true, illusion = false})
+					local shortest = 30000
+					local enemy = nil
+					for g,h in ipairs(enemies) do
+						local distance = math.sqrt(math.pow(v.position.x-h.position.x,2)+math.pow(v.position.y-h.position.y,2))
+						if shortest > distance then
+							shortest = distance
+							enemy = h
+						end
+					end
+					local spell = v:GetAbility(1)
+					if spell.state == STATE_READY or spell.cd <= shortest/enemy.movespeed then
+						if shortest <= range then
+							if not famils[v.handle].enemy or famils[v.handle].enemy.handle ~= enemy.handle then
+								famils[v.handle].enemy = enemy
+								famils[v.handle].stop = tick+stuntime*1000
+								famils[v.handle].sleept = 0
+							end
+							if famils[v.handle].stop >= tick then
+								local distance = famils[v.handle].enemy.movespeed-295
+								famils[v.handle].oldvec = famils[v.handle].vec
+								famils[v.handle].vec = Vector(famils[v.handle].enemy.position.x+distance*math.cos(famils[v.handle].enemy.rotR),famils[v.handle].enemy.position.y+distance*math.sin(famils[v.handle].enemy.rotR),famils[v.handle].enemy.position.z)
+								local distance = math.sqrt(math.pow(v.position.x-famils[v.handle].vec.x,2)+math.pow(v.position.y-famils[v.handle].vec.y,2))
+								if famils[v.handle].oldvec ~= famils[v.handle].vec and distance > 30 then
+									v:Move(famils[v.handle].vec)
+								end
+								local modif = famils[v.handle].enemy:FindModifier("modifier_stunned")
+								if famils[v.handle].sleept < tick and distance <= 30 and (not modif or modif.remainingTime <= 1.01) then
+									v:CastAbility(spell)
+									for g,h in ipairs(familiars) do
+										if famils[h.handle].enemy and famils[v.handle].enemy.handle == famils[h.handle].enemy.handle then
+											famils[h.handle].sleept = tick + 1200
+										end
+									end
+								end
+							end
+						else
+							v:CastAbility(spell)
+						end
+					end
+				end
 			end
 		end
 	end
@@ -111,6 +169,7 @@ font = drawMgr:CreateFont("visagefont","Arial",14,500)
 registered = false
 init = false
 unreg = false
+famils = {}
 active = true
 sleeptick = 0
 	script:RegisterEvent(EVENT_TICK,Tick)
