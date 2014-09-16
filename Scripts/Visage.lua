@@ -128,7 +128,7 @@ function Tick(tick)
 						end
 					end
 					local spell = v:GetAbility(1)
-					if spell.state == STATE_READY or spell.cd <= shortest/enemy.movespeed then
+					if spell.state == STATE_READY or (enemy and spell.cd <= shortest/enemy.movespeed) then
 						if shortest <= range then
 							if not famils[v.handle].enemy or famils[v.handle].enemy.handle ~= enemy.handle then
 								famils[v.handle].enemy = enemy
