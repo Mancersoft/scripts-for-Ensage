@@ -112,12 +112,6 @@ modifnames = {
 }
 }
 
-font = drawMgr:CreateFont("timersfont","Arial",fontsize,500)
-timers = {}
-entities = {}
-registered = false
-sleeptick = 0
-
 function regi(v,z)
 	if not timers[v.handle] then
 		timers[v.handle] = {}
@@ -163,54 +157,100 @@ function Modifadd(v,modif)
 end
 
 function Tick(tick)
-	if not client.connected or client.loading or sleeptick > tick or client.console or not entityList:GetMyHero() then
+	if not client.connected or client.loading or client.console or not entityList:GetMyHero() then
 		return
 	end
-	sleeptick = tick+50
-	entities[1] = entityList:GetEntities({type=LuaEntity.TYPE_NPC,classId = CDOTA_BaseNPC})
-	entities[2] = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
-	entities[3] = entityList:GetEntities({type=LuaEntity.TYPE_NPC,classId = CDOTA_BaseNPC_Additive})
-	for _,w in ipairs(entities) do
-		for i,v in ipairs(w) do
-			for q = 1,3 do
-				if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].time.visible then
-					if not timers[v.handle][q].name then
-						if not v.alive then
-							timers[v.handle][q].time.text = tostring(math.floor(v.respawnTime*10)/10)
+	if sleeptick < tick then
+		sleeptick = tick+50
+		entities[1] = entityList:GetEntities({classId = CDOTA_BaseNPC})
+		entities[2] = entityList:GetEntities({type=LuaEntity.TYPE_HERO, illusion = false})
+		entities[3] = entityList:GetEntities({classId = CDOTA_BaseNPC_Additive})
+		for _,w in ipairs(entities) do
+			for i,v in ipairs(w) do
+				for q = 1,3 do
+					if timers[v.handle] and timers[v.handle][q] and timers[v.handle][q].time.visible then
+						if not timers[v.handle][q].name then
+							if not v.alive then
+								timers[v.handle][q].time.text = tostring(math.floor(v.respawnTime*10)/10)
+							else
+								timers[v.handle][q].time.visible = false
+								timers[v.handle][q].texture.visible = false
+								timers[v.handle][q].visible = false
+								timers[v.handle][q].name = "1"
+							end
+						elseif timers[v.handle][q].entity:FindModifier(timers[v.handle][q].name) then
+							if timers[v.handle][q].name ~= "modifier_enigma_black_hole_thinker" then
+								timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
+								if timers[v.handle][q].modif.texture == "wisp_relocate" then
+									if math.floor(timers[v.handle][q].modif.remainingTime*10) == 1 then
+										wisp.pos = v.position
+									elseif timers[v.handle][q].modif.remainingTime == 0 then
+										count = 121
+										wisp.start = true
+									end
+								end
+							else
+								timers[v.handle][q].time.text = tostring(math.floor((4-timers[v.handle][q].modif.elapsedTime)*10)/10)
+							end
 						else
 							timers[v.handle][q].time.visible = false
 							timers[v.handle][q].texture.visible = false
 							timers[v.handle][q].visible = false
-							timers[v.handle][q].name = "1"
 						end
-					elseif timers[v.handle][q].entity:FindModifier(timers[v.handle][q].name) then
-						if timers[v.handle][q].name ~= "modifier_enigma_black_hole_thinker" then
-							timers[v.handle][q].time.text = tostring(math.floor(timers[v.handle][q].modif.remainingTime*10)/10)
-						else
-							timers[v.handle][q].time.text = tostring(math.floor((4-timers[v.handle][q].modif.elapsedTime)*10)/10)
-						end
-					else
-						timers[v.handle][q].time.visible = false
-						timers[v.handle][q].texture.visible = false
-						timers[v.handle][q].visible = false
 					end
 				end
+				if v.reincarnating then
+					regi(v,3)
+					timers[v.handle][3].entity = v
+					timers[v.handle][3].modif = nil
+					timers[v.handle][3].name = nil
+					timers[v.handle][3].time.visible = true
+					timers[v.handle][3].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/skeleton_king_reincarnate_slow")
+					timers[v.handle][3].texture.visible = true
+				end
 			end
-			if v.reincarnating then
-				regi(v,3)
-				timers[v.handle][3].entity = v
-				timers[v.handle][3].modif = nil
-				timers[v.handle][3].name = nil
-				timers[v.handle][3].time.visible = true
-				timers[v.handle][3].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/skeleton_king_reincarnate_slow")
-				timers[v.handle][3].texture.visible = true
+		end
+	end
+	if wisp.start then
+		local gametime = math.floor(client.totalGameTime*10)
+		if pretime ~= gametime then
+			count = count-1
+			wisp.time.text = tostring(count/10)
+		end
+		pretime = gametime
+		q,positi = client:ScreenPosition(wisp.pos)
+		if q then
+			wisp.time.position = Vector2D(positi.x+distance,positi.y)
+			wisp.texture.position = Vector2D(positi.x-distance,positi.y)
+			if not wisp.time.visible then
+				wisp.time.visible = true
+				wisp.texture.visible = true
 			end
+		elseif wisp.time.visible then
+			wisp.time.visible = false
+			wisp.texture.visible = false
+		end
+		if count == 0 then
+			wisp.time.visible = false
+			wisp.texture.visible = false
+			wisp.start = false
 		end
 	end
 end
 
 function Load()
 	if registered then return end
+font = drawMgr:CreateFont("timersfont","Arial",fontsize,500)
+timers = {}
+entities = {}
+wisp = {}
+wisp.time = drawMgr:CreateText(0,0,-1,"",font)
+wisp.time.visible = false
+wisp.texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF,drawMgr:GetTextureId("NyanUI/modifiers/wisp_relocate_return"))
+wisp.texture.visible = false
+registered = false
+pretime = 0
+sleeptick = 0
 	script:RegisterEvent(EVENT_TICK,Tick)
 	script:RegisterEvent(EVENT_MODIFIER_ADD,Modifadd)
 	registered = true
