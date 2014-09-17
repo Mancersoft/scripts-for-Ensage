@@ -37,16 +37,16 @@ function Tick(tick)
 	end
 	sleeptick = tick + 200
 	if not init then
-		mp = entityList:GetMyPlayer()
+		me = entityList:GetMyHero()
 		init = true
 	end
 	if not couriers or #couriers == 0 then
-		couriers = entityList:GetEntities({type=LuaEntity.TYPE_COURIER, team = mp.team, alive=true})
+		couriers = entityList:GetEntities({type=LuaEntity.TYPE_COURIER, team = me.team, alive=true})
 		if #couriers ~= 0 then
 			pos = couriers[1].position
 		end
 	end
-	local heroes = entityList:GetEntities({type=LuaEntity.TYPE_HERO, team = mp.team, illusion = false})
+	local heroes = entityList:GetEntities({type=LuaEntity.TYPE_HERO, team = me.team, illusion = false})
 	for i,v in ipairs(heroes) do
 		if not panel[v.handle] then
 			if v.team == 3 then
