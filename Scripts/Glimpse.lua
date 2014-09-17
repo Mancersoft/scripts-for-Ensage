@@ -36,6 +36,8 @@ function Tick(tick)
 			if me.classId == CDOTA_Unit_Hero_Disruptor then
 				disruptor = true
 			end
+			pretime,delay = math.modf(client.totalGameTime*10)
+			pretime = pretime+1
 			font = drawMgr:CreateFont("glimpsefont","Arial",fontsize,500)
 			init = true
 		elseif #friends == 5 then
@@ -45,8 +47,9 @@ function Tick(tick)
 		end
 		return
 	end
-	local gametime = math.floor(client.totalGameTime*10)
-	if pretime ~= gametime then
+	local gametime = client.totalGameTime*10
+	if gametime >= pretime+delay then
+		pretime = pretime+1
 		update = true
 		if count == 40 then
 			count = 0
@@ -155,7 +158,6 @@ function Tick(tick)
 			end
 		end
 	end
-	pretime = gametime
 end
 
 function Load()
@@ -169,7 +171,6 @@ disruptor = false
 positions = {}
 npces = {}
 count = 0
-pretime = 0
 	script:RegisterEvent(EVENT_TICK,Tick)
 	registered = true
 end
