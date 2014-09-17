@@ -66,7 +66,7 @@ function Key(msg,code)
 			local fams = entityList:FindEntities({classId = CDOTA_Unit_VisageFamiliar, alive = true})
 			for q,w in ipairs(fams) do
 				local spl = w:GetAbility(1)
-				if spl.state == STATE_READY
+				if spl.state == STATE_READY then
 					w:CastAbility(spl)
 				end
 			end
