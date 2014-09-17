@@ -7,6 +7,7 @@ require("libs.ScriptConfig")
 
 config = ScriptConfig.new()
 config:SetParameter("Activate", "T")
+config:SetParameter("StoneForAll", "F")
 config:SetParameter("Xcord", 50)
 config:SetParameter("Ycord", 40)
 config:SetParameter("HpPercentFamiliars", 0.30)
@@ -39,7 +40,8 @@ end
 -- config
 x = config.Xcord -- x lable position
 y = config.Ycord -- y lable position
-hotkey = numpad(config.Activate) -- hotkey for combo relocate return
+hotkey1 = numpad(config.Activate) -- hotkey for combo relocate return
+hotkey2 = numpad(config.StoneForAll)
 hpPercent = config.HpPercentFamiliars
 range = config.RangeForStun
 if config.TimeForStun > 15 then
@@ -52,12 +54,22 @@ end
 
 function Key(msg,code)
 	if client.console or client.chat or not init then return end
-	if msg == KEY_UP and code == hotkey then
-		active = not active
-		if active then
-			text.text = "Visage script: ACTIVE, HpPercent = "..hpPercent
-		else
-			text.text = "Visage script: NOT ACTIVE, HpPercent = "..hpPercent
+	if msg == KEY_UP then
+		if code == hotkey1 then
+			active = not active
+			if active then
+				text.text = "Visage script: ACTIVE, HpPercent = "..hpPercent
+			else
+				text.text = "Visage script: NOT ACTIVE, HpPercent = "..hpPercent
+			end
+		elseif code == hotkey2 then
+			local fams = entityList:FindEntities({classId = CDOTA_Unit_VisageFamiliar, alive = true})
+			for q,w in ipairs(fams) do
+				local spl = w:GetAbility(1)
+				if spl.state == STATE_READY
+					w:CastAbility(spl)
+				end
+			end
 		end
 	end
 end
