@@ -186,7 +186,8 @@ function Tick(tick)
 										wisp.pos = v.position
 									elseif timers[v.handle][q].modif.remainingTime == 0 then
 										count = 121
-										wisp.start = true
+										pretime,delay = math.modf(client.totalGameTime*10)
+										pretime = pretime+1
 									end
 								end
 							else
@@ -211,13 +212,13 @@ function Tick(tick)
 			end
 		end
 	end
-	if wisp.start then
-		local gametime = math.floor(client.totalGameTime*10)
-		if pretime ~= gametime then
+	if pretime then
+		local gametime = client.totalGameTime*10
+		if gametime >= pretime+delay then
+			pretime = pretime+1
 			count = count-1
 			wisp.time.text = tostring(count/10)
 		end
-		pretime = gametime
 		q,positi = client:ScreenPosition(wisp.pos)
 		if q then
 			wisp.time.position = Vector2D(positi.x+distance,positi.y)
@@ -233,7 +234,7 @@ function Tick(tick)
 		if count == 0 then
 			wisp.time.visible = false
 			wisp.texture.visible = false
-			wisp.start = false
+			pretime = nil
 		end
 	end
 end
@@ -249,7 +250,6 @@ wisp.time.visible = false
 wisp.texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF,drawMgr:GetTextureId("NyanUI/modifiers/wisp_relocate_return"))
 wisp.texture.visible = false
 registered = false
-pretime = 0
 sleeptick = 0
 	script:RegisterEvent(EVENT_TICK,Tick)
 	script:RegisterEvent(EVENT_MODIFIER_ADD,Modifadd)
