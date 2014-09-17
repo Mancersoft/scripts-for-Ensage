@@ -147,7 +147,7 @@ function Tick(tick)
 				npces[h.handle] = true
 				positions[enemy.handle].npchandle = h.handle
 				positions[enemy.handle].position = positions[enemy.handle].lastpos
-				local distance = math.sqrt(math.pow(positions[enemy.handle].lastpos.x-h.position.x,2)+math.pow(positions[enemy.handle].lastpos.y-h.position.y,2))
+				local distance = math.sqrt(math.pow(positions[enemy.handle].lastpos.x-enemy.position.x,2)+math.pow(positions[enemy.handle].lastpos.y-enemy.position.y,2))
 				if distance < 1080 then
 					positions[enemy.handle].timing = math.floor(distance/60)
 				else
