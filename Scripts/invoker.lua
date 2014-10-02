@@ -384,6 +384,7 @@ function GetSpell(SpellName)
 end
  
 function PrepareCombo(func)
+        if func == nil then return end
         func()
         local tempqueue = {{"wait",10}}
         for k,v in pairs(queue) do tempqueue[k] = v end
@@ -397,7 +398,7 @@ function PrepareCombo(func)
                         i = i +1
                 end
                 k = k + 1
-    end
+        end
 end
  
 function InCombo()
