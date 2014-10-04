@@ -7,6 +7,7 @@
 -- I don't have effects for each type,
 -- which we can see in darkness (only red and blue fires), so effects repeat.
 -- Number of wards you can check on minimap screen.
+-- Update for version 6.82 doesn't have minimap screen.
 
 wards = {
 	{ x = -2173, y = 2664, z = 256, team = 1, type = 1 }, --1
@@ -15,9 +16,9 @@ wards = {
 	{ x = -1675, y = 600, z = 128, team = 1, type = 1 }, --4
 	{ x = -2001, y = 403, z = 256, team = 1, type = 1 }, --5
 	{ x = 2197, y = -1100, z = 127, team = 1, type = 1 }, --6
-	{ x = 3451, y = -2402, z = 256, team = 1, type = 1 }, --7
-	{ x = 2498, y = -2507, z = 260, team = 1, type = 1 }, --8
-	{ x = 1654, y = -2746, z = 256, team = 1, type = 1 }, --9
+	{ x = 3734, y = -2394, z = 256, team = 1, type = 1 }, --7
+	{ x = 2560, y = -2610, z = 260, team = 1, type = 1 }, --8
+	{ x = 1645, y = -2770, z = 256, team = 1, type = 1 }, --9
 	--10 not worked
 	{ x = 3119, y = -2966, z = 256, team = 3, type = 1 }, --11
 	{ x = 2308, y = -3189, z = 253, team = 3, type = 1 }, --12
@@ -42,7 +43,7 @@ wards = {
 	{ x = -3869, y = 4132, z = 256, team = 2, type = 4 }, --29
 	{ x = -3358, y = 4004, z = 256, team = 2, type = 4 }, --30
 	{ x = -1207, y = 4044, z = 256, team = 2, type = 4 }, --31
-	{ x = 4127, y = -578, z = 254, team = 1, type = 4 }, --32
+--	{ x = 4127, y = -578, z = 254, team = 1, type = 4 }, --32
 	{ x = 773, y = -2519, z = 256, team = 1, type = 4 }, --33
 	{ x = 2294, y = -4294, z = 256, team = 3, type = 4 }, --34
 	{ x = 1944, y = -4769, z = 256, team = 3, type = 4 }, --35
@@ -76,7 +77,21 @@ wards = {
 	{ x = -3341, y = -1641, z = 253, team = 2, type = 6 }, --60
 	{ x = 3795, y = -4430, z = 256, team = 3, type = 6 }, --61
 	{ x = 2666, y = -4356, z = 256, team = 3, type = 6 }, --missed
-	{ x = 5844, y = -5559, z = 256, team = 3, type = 6 } --62
+	{ x = 5844, y = -5559, z = 256, team = 3, type = 6 }, --62
+	--patch 6.82
+	{ x = 4581, y = -1300, z = 512, team = 1, type = 3 }, --63
+	{ x = 5306, y = 962, z = 512, team = 1, type = 3 }, --64
+	{ x = -4909, y = -476, z = 512, team = 1, type = 3 }, --65
+	{ x = -5270, y = 2300, z = 512, team = 3, type = 3 }, --66
+	{ x = 3898, y = -3344, z = 256, team = 1, type = 1 }, --67
+	{ x = 2999, y = -1126, z = 128, team = 1, type = 1 }, --68
+	{ x = 4579, y = -1115, z = 256, team = 2, type = 4 }, --69
+	{ x = 3984, y = -1103, z = 256, team = 2, type = 4 }, --70
+	{ x = 3739, y = -260, z = 256, team = 2, type = 4 }, --71
+	{ x = 4597, y = -181, z = 256, team = 2, type = 4 }, --72
+	{ x = 5831, y = -2562, z = 256, team = 2, type = 5 }, --73
+	{ x = 5224, y = -1714, z = 256, team = 2, type = 6 }, --74
+	{ x = 4607, y = -3793, z = 256, team = 3, type = 3 } --75
 }
 effects = { }
 registered = false
@@ -99,7 +114,6 @@ function Tick(tick)
 			effects[i]:SetVector( 0, vec)
 		end
 	end
-	print("Prowards registered!")
 	script:UnregisterEvent(Tick)
 end
 
