@@ -1,3 +1,4 @@
+--<<100% critical strike (not for items). Doesn't useful, but possible =)>>
 -- 100% critical strike. Made by Staskkk. It DOESN'T work with CRYSTALYS or DAEDALUS and with fast attack, sorry.
 
 -- Config
