@@ -1,3 +1,4 @@
+--<<Shows you timings of stuns, silences, immunes and useful modifiers>>
 -- Made by Staskkk.
 
 require("libs.Utils")
