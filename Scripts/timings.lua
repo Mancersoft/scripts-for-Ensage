@@ -23,9 +23,32 @@ height = -1*config.Antiheight -- Height of modifiers (may be positive and negati
 -- Code
 modifnames = {
 {
+"modifier_lone_druid_true_form_transform",
+"modifier_lycan_shapeshift_transform",
+"modifier_morphling_waveform",
+"modifier_naga_siren_mirror_image",
+"modifier_brewmaster_primal_split_delay",
+"modifier_chaos_knight_phantasm",
+"modifier_omninight_guardian_angel",
+"modifier_phantomlancer_dopplewalk_phase",
+"modifier_phoenix_sun_ray",
+"modifier_sandking_burrowstrike",
+"modifier_slark_dark_pact",
+"modifier_slark_pounce",
+"modifier_storm_spirit_ball_lightning",
+"modifier_templar_assassin_refraction_absorb",
+"modifier_terrorblade_metamorphosis_transform",
+"modifier_item_satanic_unholy",
+"modifier_manta_phase",
+"modifier_item_forcestaff_active",
+"modifier_item_invisibility_edge_windwalk",
+"modifier_item_blade_mail_reflect",
 "modifier_chen_test_of_faith_teleport",
 "modifier_crystal_maiden_frostbite",
 "modifier_ember_spirit_searing_chains",
+"modifier_ember_spirit_fire_remnant",
+"modifier_huskar_life_break_charge",
+"modifier_elder_titan_earth_splitter_scepter",
 "modifier_kunkka_x_marks_the_spot",
 "modifier_meepo_earthbind",
 "modifier_black_king_bar_immune",
@@ -36,6 +59,7 @@ modifnames = {
 "modifier_ghost_state",
 "modifier_item_ethereal_blade_ethereal",
 "modifier_juggernaut_blade_fury",
+"modifier_juggernaut_omnislash",
 "modifier_nyx_assassin_spiked_carapace",
 "modifier_medusa_stone_gaze",
 "modifier_slark_shadow_dance",
@@ -56,8 +80,11 @@ modifnames = {
 "modifier_bane_nightmare",
 "modifier_bane_fiends_grip",
 "modifier_batrider_flaming_lasso",
+"modifier_beastmaster_prima_roar_push",
 "modifier_dark_seer_vacuum",
 "modifier_earth_spirit_boulder_smash",
+"modifier_earth_spirit_geomagnetic_grip",
+"modifier_earthspirit_petrify",
 "modifier_earthshaker_fissure_stun",
 "modifier_elder_titan_echo_stomp",
 "modifier_faceless_void_timelock_freeze",
@@ -87,10 +114,11 @@ modifnames = {
 "modifier_knockback",
 "modifier_blinding_light_knockback",
 "modifier_storm_spirit_electric_vortex_pull",
+"modifier_techies_stasis_trap_stunned",
 "modifier_tidehunter_ravage",
 "modifier_tiny_avalanche_stun",
+"modifier_tiny_toss",
 "modifier_treant_overgrowth",
-"modifier_troll_warlord_berserkers_rage",
 "modifier_tusk_walrus_punch_air_time",
 "modifier_windrunner_shackle_shot",
 "modifier_brewmaster_storm_cyclone",
@@ -102,6 +130,7 @@ modifnames = {
 "modifier_stunned"
 },
 {
+"modifier_sniper_headshot_slow",
 "modifier_bloodseeker_bloodrage",
 "modifier_silence",
 "modifier_doom_bringer_doom",
@@ -144,10 +173,15 @@ function Modifadd(v,modif)
 					timers[v.handle][z].modif = modif
 					timers[v.handle][z].name = modif.name
 					timers[v.handle][z].time.visible = true
-					if v.type ~= LuaEntity.TYPE_NPC then
-						timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.name,10))
+					if string.sub(modif.texture,1,5) ~= "item_" then
+						timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..modif.texture)
 					else
-						timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..modif.texture)
+						local tname = string.sub(modif.name,10)
+						if tname ~= "eul_cyclone" and tname ~= "manta_phase" then
+							timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..tname)
+						else
+							timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.texture,6))
+						end
 					end
 					timers[v.handle][z].texture.visible = true
 					stun = true
@@ -207,7 +241,7 @@ function Tick(tick)
 					timers[v.handle][3].modif = nil
 					timers[v.handle][3].name = nil
 					timers[v.handle][3].time.visible = true
-					timers[v.handle][3].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/skeleton_king_reincarnate_slow")
+					timers[v.handle][3].texture.textureId = drawMgr:GetTextureId("NyanUI/spellicons/skeleton_king_reincarnation")
 					timers[v.handle][3].texture.visible = true
 				end
 			end
