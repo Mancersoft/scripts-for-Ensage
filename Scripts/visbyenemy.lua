@@ -1,3 +1,4 @@
+--<<Shows when you or your teammates are visible by enemy in top bar>>
 -- Made by Staskkk.
 
 require("libs.Utils")
