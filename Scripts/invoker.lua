@@ -1,3 +1,4 @@
+--<<Invoker helper. Combos and hotkeys for spells and orbs>>
 -- Made by Sophylax for old version. Reworked by Staskkk for New version.
 
 require("libs.Utils")
