@@ -1,3 +1,4 @@
+--<<Shows timing Glimpse and for Disruptor where spell return enemies>>
 -- Made by Staskkk.
 -- Config
 require("libs.ScriptConfig")
