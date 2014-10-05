@@ -1,3 +1,4 @@
+--<<Shows you professional (the best) positions for wards>>
 -- Made by Staskkk.
 -- This script shows you professional (the best) positions for observer wards.
 -- Some wards shows for Radiant, some for Dire, some for both.
