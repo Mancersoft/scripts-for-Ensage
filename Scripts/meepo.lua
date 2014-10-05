@@ -1,3 +1,4 @@
+--<<Meepo helper. Combos, Poof, forest's stack and auto go to fontaine>>
 -- Made by Staskkk.
 
 require("libs.Utils")
@@ -87,14 +88,6 @@ function Key(msg,code)
 	end
 	if activated then
 		if msg == KEY_UP then
-			if code == hotkeys[9] then
-				hpPercent = hpPercent-0.05
-				text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
-			end
-			if code == hotkeys[10] then
-				hpPercent = hpPercent+0.05
-				text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
-			end
 			if code == hotkeys[7] and not IsKeyDown(16) then
 				local sel = mp.selection[1]
 				local spell = sel:FindItem("item_blink")
@@ -122,8 +115,7 @@ function Key(msg,code)
 						com = true
 					end
 				end
-			end
-			if code == hotkeys[8] and com then
+			elseif code == hotkeys[8] and com then
 				sleep[2] = 0
 				sele = false
 				com = false
@@ -133,8 +125,7 @@ function Key(msg,code)
 				for i,v in ipairs(meepos) do
 					v:Stop()
 				end
-			end
-			if code == hotkeys[1] or code == hotkeys[2] then
+			elseif code == hotkeys[1] or code == hotkeys[2] then
 				local sel = mp.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
 					poofall(sel,false)
@@ -145,14 +136,12 @@ function Key(msg,code)
 						end
 					end
 				end
-			end
-			if code == hotkeys[11] then
+			elseif code == hotkeys[11] then
 				local sel = mp.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
 					poofall(sel,true)
 				end
-			end
-			if code == hotkeys[3] then
+			elseif code == hotkeys[3] then
 				local sel = mp.selection[1]
 				if sel and sel.name == "npc_dota_hero_meepo" then
 					local spell = sel:GetAbility(2)
@@ -160,8 +149,7 @@ function Key(msg,code)
 						sel:CastAbility(spell,foun)
 					end
 				end
-			end
-			if code == hotkeys[4] and IsKeyDown(16) then
+			elseif code == hotkeys[4] and IsKeyDown(16) then
 				local sel = mp.selection[1]
 				if not meeponumb[sel.handle] or meeponumb[sel.handle] == 0 then
 					if sel then
@@ -185,9 +173,14 @@ function Key(msg,code)
 				else
 					meeponumb[sel.handle] = 0
 				end
+			elseif code == hotkeys[9] then
+				hpPercent = hpPercent-0.05
+				text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
+			elseif code == hotkeys[10] then
+				hpPercent = hpPercent+0.05
+				text.text = "Meepo script: ACTIVE hpPercent = "..tostring(hpPercent)
 			end
-		end
-		if msg == KEY_DOWN and code == hotkeys[5] and target and target.visible and ((sleep[3] <= GetTick() and target == targe) or (target ~= targe)) then
+		elseif msg == KEY_DOWN and code == hotkeys[5] and target and target.visible and ((sleep[3] <= GetTick() and target == targe) or (target ~= targe)) then
 			targe = target
 			local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 			local throw = true
@@ -304,7 +297,7 @@ function Tick(tick)
 	if activated then
 		local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 		for i,v in ipairs(meepos) do
-			if meeponumb[v.handle] and meeponumb[v.handle] ~= 0 and not ordered[v.handle] and isPosEqual(v.position,routes[meeponumb[v.handle]][3],100) and math.floor(client.gameTime%60) == 51 then
+			if meeponumb[v.handle] and meeponumb[v.handle] ~= 0 and not ordered[v.handle] and isPosEqual(v.position,routes[meeponumb[v.handle]][3],100) and math.floor(client.gameTime%60) == math.floor(52.48-540/v.movespeed) then
 				ordered[v.handle] = true
 				v:Move(routes[meeponumb[v.handle]][1])
 				v:Move(routes[meeponumb[v.handle]][2],true)
