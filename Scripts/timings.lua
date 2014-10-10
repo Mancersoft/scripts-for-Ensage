@@ -131,7 +131,6 @@ modifnames = {
 },
 {
 "modifier_sniper_headshot_slow",
-"modifier_bloodseeker_bloodrage",
 "modifier_silence",
 "modifier_doom_bringer_doom",
 "modifier_earth_spirit_boulder_smash_silence",
