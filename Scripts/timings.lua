@@ -141,22 +141,6 @@ modifnames = {
 }
 }
 
-function prepare(v,z)
-	timers[v.handle][z].modif = modif
-	timers[v.handle][z].time.visible = true
-	if string.sub(modif.texture,1,5) ~= "item_" then
-		timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..modif.texture)
-	else
-		local tname = string.sub(modif.name,10)
-		if tname ~= "eul_cyclone" and tname ~= "manta_phase" then
-			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..tname)
-		else
-			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.texture,6))
-		end
-	end
-	timers[v.handle][z].texture.visible = true
-end
-
 function regi(v,z)
 	if not timers[v.handle] then
 		timers[v.handle] = {}
@@ -173,19 +157,6 @@ function regi(v,z)
 	end
 end
 
-function findmodifs(entity,handle)
-	local array = entity.modifiers
-	local m = 0
-	while and m ~= #array do
-		m = m+1
-		if handle == array[m] then
-			return true
-			m = #array
-		end
-	end
-	return false
-end
-
 function Modifadd(v,modif)
 	if (v.type == LuaEntity.TYPE_HERO and not v.illusion) or (v.type == LuaEntity.TYPE_NPC and v.modifiers and (v.modifiers[1].name == "modifier_enigma_black_hole_thinker" or v.modifiers[1].name == "modifier_disruptor_static_storm_thinker" or v.modifiers[1].name == "modifier_riki_smoke_screen_thinker" or v.modifiers[1].name == "modifier_faceless_void_chronosphere_selfbuff" or v.modifiers[1].name == "modifier_phoenix_sun")) then
 		z = 0
@@ -195,11 +166,23 @@ function Modifadd(v,modif)
 			x = 0
 			while not stun and x ~= #modifnames[z] do
 				x = x+1
-				if (v.type == LuaEntity.TYPE_NPC or modif.name == modifnames[z][x]) and not findmodifs(v,modif.handle) then
-					table.insert(modifs,{v,modif.handle,modif,z})
-					table.sort(modifs,function (a,b) return a[3].remainingTime > b[3].remainingTime end)
+				if v.type == LuaEntity.TYPE_NPC or (modif.name == modifnames[z][x] and (not timers[v.handle] or not timers[v.handle][z] or not timers[v.handle][z].time.visible or (timers[v.handle][z].entity:FindModifier(timers[v.handle][z].name) and modif.remainingTime > timers[v.handle][z].modif.remainingTime))) then
 					regi(v,z)
-					prepare(v,z)
+					timers[v.handle][z].entity = v
+					timers[v.handle][z].modif = modif
+					timers[v.handle][z].name = modif.name
+					timers[v.handle][z].time.visible = true
+					if string.sub(modif.texture,1,5) ~= "item_" then
+						timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..modif.texture)
+					else
+						local tname = string.sub(modif.name,10)
+						if tname ~= "eul_cyclone" and tname ~= "manta_phase" then
+							timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..tname)
+						else
+							timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.texture,6))
+						end
+					end
+					timers[v.handle][z].texture.visible = true
 					stun = true
 				end
 			end
@@ -302,7 +285,6 @@ wisp.texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF,drawMgr:Get
 wisp.texture.visible = false
 registered = false
 sleeptick = 0
-modifs = {}
 	script:RegisterEvent(EVENT_TICK,Tick)
 	script:RegisterEvent(EVENT_MODIFIER_ADD,Modifadd)
 	registered = true
