@@ -42,6 +42,8 @@ modifnames = {
 "modifier_item_forcestaff_active",
 "modifier_item_invisibility_edge_windwalk",
 "modifier_item_blade_mail_reflect",
+"modifier_mirana_leap",
+"modifier_item_sphere_target",
 "modifier_chen_test_of_faith_teleport",
 "modifier_crystal_maiden_frostbite",
 "modifier_ember_spirit_searing_chains",
@@ -162,7 +164,9 @@ function prepare(v,z,modif)
 		timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..modif.texture)
 	else
 		local tname = string.sub(modif.name,10)
-		if tname ~= "eul_cyclone" and tname ~= "manta_phase" then
+		if tname == "item_sphere_target" then
+			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/items/"..string.sub(modif.texture,6))
+		elseif tname ~= "eul_cyclone" and tname ~= "manta_phase" then
 			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..tname)
 		else
 			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.texture,6))
