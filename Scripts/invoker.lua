@@ -81,7 +81,7 @@ prepWall = false
 prepTick = 0
 target = nil
 torndur = {0800,1100,1400,1700,2000,2300,2500}
-empdelay = {3700,3400,3150,2850,2600,2300,2000}
+empdelay = 2900
 queue = {}
 future = {}
 Keys = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
@@ -94,14 +94,14 @@ combos = {"TotalCombo","TornadoEMP","TornadoMeteorWall","MeteorBlast","SnapDPS",
 -- Tornado - EMP - Chaos Meteor - Deafening Blast - Cold Snap - Forge Spirit - Sun Strike - Ice Wall
 function TotalCombo( )
         if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 then
-                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay[me:GetAbility(2).level]+250},www,{"wait",100},wee,{"wait",1300},qwe,qqq,qee,eee}
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www,{"wait",100},wee,{"wait",1300},qwe,qqq,qee,eee}
         end
 end
  
 -- Tornado - EMP
 function TornadoEMPCombo( )
         if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 then
-                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay[me:GetAbility(2).level]+250},www}
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www}
         end
 end
  
@@ -256,6 +256,7 @@ function Tick( tick )
                         elseif Keys[10] then
                                 CastCombination(qwe)
                         elseif Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] and not activeCombo then
+                                 first = true
                                  TotalCombo( )
                                 activeCombo = true
                         elseif not Keys[11] and Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] and not activeCombo then
@@ -276,6 +277,7 @@ function Tick( tick )
                         elseif (Keys[11] or  Keys[12] or  Keys[13] or  Keys[14] or  Keys[20] or  Keys[21])and activeCombo then
                                 Combo()
                         elseif not Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] then
+                                first = false
                                 StopCombo()
                                 activeCombo = false
                         end
@@ -436,13 +438,27 @@ function Combo()
                                 table.remove(queue,1)
                         end
                 elseif target then
-                        CastCombination(queue[1])
-                        if nextStep then
-                                table.remove(queue,1)
-                                nextStep = false
+                        if first then
+                                fir = entityList:GetEntities(function (a) return a.name == queue[1][4] end)
+                                if fir[1] and fir[1].cd ~= 0 then
+                                        table.remove(queue,1)
+                                else
+                                        CastCombination(queue[1])
+                                        if nextStep then
+                                                table.remove(queue,1)
+                                                nextStep = false
+                                        end
+                                end
+                        else
+                                CastCombination(queue[1])
+                                if nextStep then
+                                        table.remove(queue,1)
+                                        nextStep = false
+                                end
                         end
                 end
         end
+        if #queue == 0 then first = false end
         if #queue > 1 and InCombo then
                 if queue[2][1] ~= "wait" and queue[2][1] ~= "item_unit" and queue[2][1] ~= "item_point" and queue[2][1] ~= "item_self" and queue[2][1] ~= "item_notarget" then
                         Invoke(queue[2])
@@ -565,6 +581,7 @@ function Load()
         script:RegisterEvent(EVENT_KEY,Key)
         script:RegisterEvent(EVENT_TICK,Tick)
         registered = true
+        first = false
 end
  
 function Close()
