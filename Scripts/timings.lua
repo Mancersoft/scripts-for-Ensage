@@ -203,7 +203,7 @@ function removes(r,t)
 end
 
 function Modifadd(v,modif)
-	if (v.type == LuaEntity.TYPE_HERO and not v.illusion) or (v.type == LuaEntity.TYPE_NPC and (modif.name == "modifier_enigma_black_hole_thinker" or modif.name == "modifier_disruptor_static_storm_thinker" or modif.name == "modifier_riki_smoke_screen_thinker" or modif.name == "modifier_faceless_void_chronosphere_selfbuff" or modif.name == "modifier_phoenix_sun")) then
+	if (v.type == LuaEntity.TYPE_HERO and not v.illusion) or (v.type == LuaEntity.TYPE_NPC and (modif.name == "modifier_enigma_black_hole_thinker" or modif.name == "modifier_disruptor_static_storm_thinker" or modif.name == "modifier_riki_smoke_screen_thinker" or modif.name == "modifier_faceless_void_chronosphere_selfbuff" or modif.name == "modifier_phoenix_sun" or modif.name == "modifier_shadow_shaman_serpent_ward")) then
 		z = 0
 		stun = false
 		while not stun and z ~= 3 do
