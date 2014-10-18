@@ -203,7 +203,7 @@ function removes(r,t)
 end
 
 function Modifadd(v,modif)
-	if (v.type == LuaEntity.TYPE_HERO and not v.illusion) or (v.type == LuaEntity.TYPE_NPC and (modif.name == "modifier_enigma_black_hole_thinker" or modif.name == "modifier_disruptor_static_storm_thinker" or modif.name == "modifier_riki_smoke_screen_thinker" or modif.name == "modifier_faceless_void_chronosphere_selfbuff" or modif.name == "modifier_phoenix_sun" or modif.name == "modifier_shadow_shaman_serpent_ward" or modif.name == "modifier_skywrath_mage_mystic_flare")) then
+	if ((v.type == LuaEntity.TYPE_HERO and not v.illusion) or v.type == LuaEntity.TYPE_MEEPO) or ((v.type == LuaEntity.TYPE_NPC or v.type == LuaEntity.TYPE_CREEP) and (modif.name == "modifier_enigma_black_hole_thinker" or modif.name == "modifier_disruptor_static_storm_thinker" or modif.name == "modifier_riki_smoke_screen_thinker" or modif.name == "modifier_faceless_void_chronosphere_selfbuff" or modif.name == "modifier_phoenix_sun" or modif.name == "modifier_shadow_shaman_serpent_ward" or modif.name == "modifier_skywrath_mage_mystic_flare" or modif.name == "modifier_kill")) then
 		z = 0
 		stun = false
 		while not stun and z ~= 3 do
@@ -211,7 +211,7 @@ function Modifadd(v,modif)
 			x = 0
 			while not stun and x ~= #modifnames[z] do
 				x = x+1
-				if (v.type == LuaEntity.TYPE_NPC or modif.name == modifnames[z][x]) then
+				if (v.type == LuaEntity.TYPE_NPC or v.type == LuaEntity.TYPE_CREEP or modif.name == modifnames[z][x]) then
 					regi(v,z)
 					table.insert(modifs,{v,v.handle,modif.handle,modif,z,modif.remainingTime,modif.name})
 					table.sort(modifs,function (a,b) return a[6] > b[6] end)
