@@ -45,6 +45,7 @@ modifnames = {
 "modifier_mirana_leap",
 "modifier_item_sphere_target",
 "modifier_alchemist_unstable_concoction",
+"modifier_kill",
 "modifier_chen_test_of_faith_teleport",
 "modifier_crystal_maiden_frostbite",
 "modifier_ember_spirit_searing_chains",
@@ -203,7 +204,7 @@ function removes(r,t)
 end
 
 function Modifadd(v,modif)
-	if ((v.type == LuaEntity.TYPE_HERO and not v.illusion) or v.type == LuaEntity.TYPE_MEEPO) or ((v.type == LuaEntity.TYPE_NPC or v.type == LuaEntity.TYPE_CREEP) and (modif.name == "modifier_enigma_black_hole_thinker" or modif.name == "modifier_disruptor_static_storm_thinker" or modif.name == "modifier_riki_smoke_screen_thinker" or modif.name == "modifier_faceless_void_chronosphere_selfbuff" or modif.name == "modifier_phoenix_sun" or modif.name == "modifier_shadow_shaman_serpent_ward" or modif.name == "modifier_skywrath_mage_mystic_flare" or modif.name == "modifier_kill")) then
+	if ((v.type == LuaEntity.TYPE_HERO and not v.illusion) or v.type == LuaEntity.TYPE_MEEPO) or ((v.type == LuaEntity.TYPE_NPC or v.type == LuaEntity.TYPE_CREEP or v.type == LuaEntity.TYPE_HERO) and (modif.name == "modifier_enigma_black_hole_thinker" or modif.name == "modifier_disruptor_static_storm_thinker" or modif.name == "modifier_riki_smoke_screen_thinker" or modif.name == "modifier_faceless_void_chronosphere_selfbuff" or modif.name == "modifier_phoenix_sun" or modif.name == "modifier_shadow_shaman_serpent_ward" or modif.name == "modifier_skywrath_mage_mystic_flare" or modif.name == "modifier_kill")) then
 		z = 0
 		stun = false
 		while not stun and z ~= 3 do
