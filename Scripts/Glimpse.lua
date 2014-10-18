@@ -77,8 +77,8 @@ function Tick(tick)
 			positions[v.handle].time.visible = false
 		end
 		if update then
+			positions[v.handle].lastpos = positions[v.handle][count]
 			if v.visible then
-				positions[v.handle].lastpos = positions[v.handle][count]
 				positions[v.handle][count] = v.position
 			else
 				positions[v.handle][count] = nil
