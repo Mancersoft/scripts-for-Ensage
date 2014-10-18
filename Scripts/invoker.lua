@@ -60,7 +60,7 @@ numpad(config.combo7),numpad(config.combo8)}
 -- 4 - MeteorBlastCombo: Chaos Meteor - Deafening Blast
 -- 5 - SnapDPSCombo: Cold Snap - Forge Spirit - Alacrity
 -- 6 - EulSSMeteorBlast Eul - Sun Strike - Chaos Meteor - Deafening Blast
--- 7 - Tornado - EMP - Deafening Blast
+-- 7 - Tornado - EMP - Chaos Meteor - Deafening Blast
 -- 8 - Tornado - Chaos Meteor - Deafening Blast
 hotkey = {numpad(config.a1qqq), numpad(config.a2qqw), numpad(config.a3qww), numpad(config.a4www), numpad(config.a5wwe), numpad(config.a6wee), numpad(config.a7eee), numpad(config.a8qee), numpad(config.a9qqe), numpad(config.a0qwe)}
 -- "Q" with space = 3 Quas, "W" with space = 3 Wex, "E" with space = 3 Exort
@@ -110,8 +110,7 @@ function TotalCombo( )
                         if torntime > empdelay and torntime > meteordelay then
                                 torntime = torntime-300
                                 if torntime-empdelay < 0 then torntime = empdelay end
-                                local meteordel = meteordelay+700
-                                queue = {qww,{"wait",torntime-empdelay},www,{"wait",empdelay-meteordel},wee,{"wait",meteordelay-blasttime},qwe,qqq,qee,eee}
+                                queue = {qww,{"wait",torntime-empdelay},www,{"wait",empdelay-meteordelay-700},wee,{"wait",meteordelay-blasttime},qwe,qqq,qee,eee}
                         elseif torntime > meteordelay then
                                 torntime = torntime+300
                                 if empdelay-torntime < 0 then torntime = empdelay end
@@ -189,23 +188,28 @@ function EulSSMeteorBlast( )
         end
 end
  
--- Tornado - EMP - Deafening Blast
-function TornadoEMPBlastCombo( )
+-- Tornado - EMP - Chaos Meteor - Deafening Blast
+function TornadoEMPMeteorBlastCombo( )
         if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 and me:GetAbility(3).level ~= 0 then
                 if target then
                         local blasttime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)
                         local torntime = blasttime+torndur[me:GetAbility(1).level]
-                        if torntime > empdelay then
+                        if torntime > empdelay and torntime > meteordelay then
                                 torntime = torntime-300
                                 if torntime-empdelay < 0 then torntime = empdelay end
-                                queue = {qww,{"wait",torntime-empdelay},www,{"wait",empdelay-blasttime-400},qwe}
-                        else
+                                queue = {qww,{"wait",torntime-empdelay},www,{"wait",empdelay-meteordelay-700},wee,{"wait",meteordelay-blasttime},qwe}
+                        elseif torntime > meteordelay then
                                 torntime = torntime+300
                                 if empdelay-torntime < 0 then torntime = empdelay end
-                                queue = {www,{"wait",empdelay-torntime},qww,{"wait",torntime-blasttime-700},qwe}
+                                meteordel = meteordelay+700
+                                if torntime-meteordel < 0 then meteordel = torntime end
+                                queue = {www,{"wait",empdelay-torntime},qww,{"wait",torntime-meteordel},wee,{"wait",meteordel-blasttime},qwe}
+                        else
+                                torntime = torntime+300
+                                queue = {www,wee,qww,{"wait",torntime-blasttime},qwe,qqq,qee,eee}
                         end
                 else
-                        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www,{"wait",1300},qwe}
+                        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www,{"wait",100},wee,{"wait",1300},qwe}
                 end
         end
 end
@@ -323,7 +327,7 @@ function Tick( tick )
                         elseif Keys[21] then
                                 PrepareCombo(EulSSMeteorBlast( ))
                         elseif Keys[22] then
-                                PrepareCombo(TornadoEMPBlastCombo( ))
+                                PrepareCombo(TornadoEMPMeteorBlastCombo( ))
                         elseif Keys[23] then
                                 PrepareCombo(TornadoMeteorBlastCombo( ))
                         elseif Keys[16] and CanCast(me:GetAbility(1)) then
@@ -383,7 +387,7 @@ function Tick( tick )
                                  EulSSMeteorBlast( )
                                 activeCombo = true
                         elseif not Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] and Keys[22] and not Keys[23] and not activeCombo then
-                                 TornadoEMPBlastCombo( )
+                                 TornadoEMPMeteorBlastCombo( )
                                 activeCombo = true
                         elseif not Keys[11] and not Keys[12] and not Keys[13] and not Keys[14] and not Keys[20] and not Keys[21] and not Keys[22] and Keys[23] and not activeCombo then
                                  TornadoMeteorBlastCombo( )
