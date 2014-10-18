@@ -98,7 +98,10 @@ function Key(msg,code)
 						eff:SetVector( 1, Vector(1200,0,0) )
 					end
 					targ = entityList:GetMouseover()
-					dot = nil
+					if dot then
+						dot = nil
+						collectgarbage("collect")
+					end
 					if targ and targ.type == LuaEntity.TYPE_HERO and targ.team ~= mp.team then
 						nota = 0
 							dot = Effect(targ, "urn_of_shadows_damage")
@@ -121,6 +124,7 @@ function Key(msg,code)
 				com = false
 				eff = nil
 				dot = nil
+				collectgarbage("collect")
 				local meepos = entityList:FindEntities({ type = LuaEntity.TYPE_MEEPO, alive = true})
 				for i,v in ipairs(meepos) do
 					v:Stop()
@@ -235,6 +239,7 @@ function Tick(tick)
 		com = false
 		eff = nil
 		dot = nil
+		collectgarbage("collect")
 		if nota ~= 0 then
 			seld:CastAbility(dag, nota)
 		else 
