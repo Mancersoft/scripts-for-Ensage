@@ -145,6 +145,7 @@ modifnames = {
 "modifier_stunned"
 },
 {
+"modifier_lycan_shapeshift",
 "modifier_sniper_headshot_slow",
 "modifier_silence",
 "modifier_doom_bringer_doom",
