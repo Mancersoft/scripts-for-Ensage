@@ -287,12 +287,12 @@ function Tick(tick)
 									timers[t[2]][t[5]].time.text = tostring(math.floor((1.61-t[4].elapsedTime)*10)/10)
 								end
 							else
-								local alchemisttime = 5.6-t[4].elapsedTime
+								local alchemisttime = 5.55-t[4].elapsedTime
 								timers[t[2]][t[5]].time.text = tostring(math.floor((alchemisttime)*10)/10)
 								t[6] = alchemisttime
 							end
 						else
-							timers[t[2]][t[5]].time.text = tostring(math.floor((4.1-t[4].elapsedTime)*10)/10)
+							timers[t[2]][t[5]].time.text = tostring(math.floor((4.09-t[4].elapsedTime)*10)/10)
 						end
 						stop[t[2]][t[5]] = true
 					else
