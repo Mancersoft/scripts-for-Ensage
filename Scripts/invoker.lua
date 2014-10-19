@@ -103,135 +103,119 @@ combos = {"TotalCombo","TornadoEMP","TornadoMeteorWall","MeteorBlast","SnapDPS",
 
 -- Tornado - EMP - Chaos Meteor - Deafening Blast - Cold Snap - Forge Spirit - Sun Strike - Ice Wall
 function TotalCombo( )
-        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 and me:GetAbility(3).level ~= 0 then
-                if target then
-                        local blasttime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)
-                        local torntime = blasttime+torndur[me:GetAbility(1).level]
-                        if torntime > empdelay and torntime > meteordelay then
-                                torntime = torntime-300
-                                if torntime-empdelay < 0 then torntime = empdelay end
-                                queue = {qww,{"wait",torntime-empdelay},www,{"wait",empdelay-meteordelay-700},wee,{"wait",meteordelay-blasttime},qwe,qqq,qee,eee}
-                        elseif torntime > meteordelay then
-                                torntime = torntime+300
-                                if empdelay-torntime < 0 then torntime = empdelay end
-                                meteordel = meteordelay+700
-                                if torntime-meteordel < 0 then meteordel = torntime end
-                                queue = {www,{"wait",empdelay-torntime},qww,{"wait",torntime-meteordel},wee,{"wait",meteordel-blasttime},qwe,qqq,qee,eee}
-                        else
-                                torntime = torntime+300
-                                queue = {www,wee,qww,{"wait",torntime-blasttime},qwe,qqq,qee,eee}
-                        end
+        if target then
+                local blasttime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)
+                local torntime = blasttime+torndur[me:GetAbility(1).level]
+                if torntime > empdelay and torntime > meteordelay then
+                        torntime = torntime-300
+                        if torntime-empdelay < 0 then torntime = empdelay end
+                        queue = {qww,{"wait",torntime-empdelay},www,{"wait",empdelay-meteordelay-700},wee,{"wait",meteordelay-blasttime},qwe,qqq,qee,eee}
+                elseif torntime > meteordelay then
+                        torntime = torntime+300
+                        if empdelay-torntime < 0 then torntime = empdelay end
+                        meteordel = meteordelay+700
+                        if torntime-meteordel < 0 then meteordel = torntime end
+                        queue = {www,{"wait",empdelay-torntime},qww,{"wait",torntime-meteordel},wee,{"wait",meteordel-blasttime},qwe,qqq,qee,eee}
                 else
-                        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www,{"wait",100},wee,{"wait",1300},qwe,qqq,qee,eee}
+                        torntime = torntime+300
+                        queue = {www,wee,qww,{"wait",torntime-blasttime},qwe,qqq,qee,eee}
                 end
+        else
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www,{"wait",100},wee,{"wait",1300},qwe,qqq,qee,eee}
         end
 end
  
 -- Tornado - EMP
 function TornadoEMPCombo( )
-        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 then
-                if target then
-                        local torntime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)+torndur[me:GetAbility(1).level]
-                        if torntime > empdelay then
-                                torntime = torntime-300
-                                if torntime-empdelay < 0 then torntime = empdelay end
-                                queue = {qww,{"wait",torntime-empdelay},www}
-                        else
-                                torntime = torntime+300
-                                if empdelay-torntime < 0 then torntime = empdelay end
-                                queue = {www,{"wait",empdelay-torntime},qww}
-                        end
+        if target then
+                local torntime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)+torndur[me:GetAbility(1).level]
+                if torntime > empdelay then
+                        torntime = torntime-300
+                        if torntime-empdelay < 0 then torntime = empdelay end
+                        queue = {qww,{"wait",torntime-empdelay},www}
                 else
-                        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www}
+                        torntime = torntime+300
+                        if empdelay-torntime < 0 then torntime = empdelay end
+                        queue = {www,{"wait",empdelay-torntime},qww}
                 end
+        else
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www}
         end
 end
  
 -- Tornado - Chaos Meteor - Ice Wall
 function TornadoMeteorWallCombo( )
-        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 and me:GetAbility(3).level ~= 0 then
-                if target then
-                        local torntime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)+torndur[me:GetAbility(1).level]
-                        if torntime > meteordelay then
-                                torntime = torntime-300
-                                if torntime-meteordelay < 0 then torntime = meteordelay end
-                                queue = {qww,{"wait",torntime-meteordelay},wee,qqe}
-                        else
-                                torntime = torntime+300
-                                if meteordelay-torntime < 0 then torntime = meteordelay end
-                                queue = {wee,{"wait",meteordelay-torntime},qww,qqe}
-                        end
+        if target then
+                local torntime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)+torndur[me:GetAbility(1).level]
+                if torntime > meteordelay then
+                        torntime = torntime-300
+                        if torntime-meteordelay < 0 then torntime = meteordelay end
+                        queue = {qww,{"wait",torntime-meteordelay},wee,qqe}
                 else
-                        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-1300},wee,{"wait",1000},qqe}
+                        torntime = torntime+300
+                        if meteordelay-torntime < 0 then torntime = meteordelay end
+                        queue = {wee,{"wait",meteordelay-torntime},qww,qqe}
                 end
+        else
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-1300},wee,{"wait",1000},qqe}
         end
 end
  
 -- Chaos Meteor - Deafening Blast
 function MeteorBlastCombo( )
-        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 and me:GetAbility(3).level ~= 0 then
-                queue = {wee,{"wait",1450},qwe}
-        end
+        queue = {wee,{"wait",1450},qwe}
 end
  
 -- Cold Snap - Forge Spirit - Alacrity
 function SnapDPSCombo( )
-        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 and me:GetAbility(3).level ~= 0 then
-                queue = {qqq,qee,wwe}
-        end
+        queue = {qqq,qee,wwe}
 end
  
 -- Eul - Sun Strike - Chaos Meteor - Deafening Blast
 function EulSSMeteorBlast( )
-        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 and me:GetAbility(3).level ~= 0 then
-                queue = {{"item_unit","item_cyclone"},{"wait",800},eee,{"wait",400},wee,{"wait",1000},qwe}
-        end
+        queue = {{"item_unit","item_cyclone"},{"wait",800},eee,{"wait",400},wee,{"wait",1000},qwe}
 end
  
 -- Tornado - EMP - Chaos Meteor - Deafening Blast
 function TornadoEMPMeteorBlastCombo( )
-        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 and me:GetAbility(3).level ~= 0 then
-                if target then
-                        local blasttime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)
-                        local torntime = blasttime+torndur[me:GetAbility(1).level]
-                        if torntime > empdelay and torntime > meteordelay then
-                                torntime = torntime-300
-                                if torntime-empdelay < 0 then torntime = empdelay end
-                                queue = {qww,{"wait",torntime-empdelay},www,{"wait",empdelay-meteordelay-700},wee,{"wait",meteordelay-blasttime},qwe}
-                        elseif torntime > meteordelay then
-                                torntime = torntime+300
-                                if empdelay-torntime < 0 then torntime = empdelay end
-                                meteordel = meteordelay+700
-                                if torntime-meteordel < 0 then meteordel = torntime end
-                                queue = {www,{"wait",empdelay-torntime},qww,{"wait",torntime-meteordel},wee,{"wait",meteordel-blasttime},qwe}
-                        else
-                                torntime = torntime+300
-                                queue = {www,wee,qww,{"wait",torntime-blasttime},qwe,qqq,qee,eee}
-                        end
+        if target then
+                local blasttime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)
+                local torntime = blasttime+torndur[me:GetAbility(1).level]
+                if torntime > empdelay and torntime > meteordelay then
+                        torntime = torntime-300
+                        if torntime-empdelay < 0 then torntime = empdelay end
+                        queue = {qww,{"wait",torntime-empdelay},www,{"wait",empdelay-meteordelay-700},wee,{"wait",meteordelay-blasttime},qwe}
+                elseif torntime > meteordelay then
+                        torntime = torntime+300
+                        if empdelay-torntime < 0 then torntime = empdelay end
+                        meteordel = meteordelay+700
+                        if torntime-meteordel < 0 then meteordel = torntime end
+                        queue = {www,{"wait",empdelay-torntime},qww,{"wait",torntime-meteordel},wee,{"wait",meteordel-blasttime},qwe}
                 else
-                        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www,{"wait",100},wee,{"wait",1300},qwe}
+                        torntime = torntime+300
+                        queue = {www,wee,qww,{"wait",torntime-blasttime},qwe,qqq,qee,eee}
                 end
+        else
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-empdelay+250},www,{"wait",100},wee,{"wait",1300},qwe}
         end
 end
  
 -- Tornado - Chaos Meteor - Deafening Blast
 function TornadoMeteorBlastCombo( )
-        if me:GetAbility(1).level ~= 0 and me:GetAbility(2).level ~= 0 and me:GetAbility(3).level ~= 0 then
-                if target then
-                        local blasttime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)
-                        local torntime = blasttime+torndur[me:GetAbility(1).level]
-                        if torntime > meteordelay then
-                                torntime = torntime-300
-                                if torntime-meteordelay < 0 then torntime = meteordelay end
-                                queue = {qww,{"wait",torntime-meteordelay},wee,{"wait",meteordelay-blasttime-400},qwe}
-                        else
-                                torntime = torntime+300
-                                if meteordelay-torntime < 0 then torntime = meteordelay end
-                                queue = {wee,{"wait",meteordelay-torntime},qww,{"wait",torntime-blasttime-700},qwe}
-                        end
+        if target then
+                local blasttime = math.floor((GetDistance2D(me,target)-34)/tornspeed*1000)
+                local torntime = blasttime+torndur[me:GetAbility(1).level]
+                if torntime > meteordelay then
+                        torntime = torntime-300
+                        if torntime-meteordelay < 0 then torntime = meteordelay end
+                        queue = {qww,{"wait",torntime-meteordelay},wee,{"wait",meteordelay-blasttime-400},qwe}
                 else
-                        queue = {qww,{"wait",torndur[me:GetAbility(1).level]-1600},wee,{"wait",1450},qwe}
+                        torntime = torntime+300
+                        if meteordelay-torntime < 0 then torntime = meteordelay end
+                        queue = {wee,{"wait",meteordelay-torntime},qww,{"wait",torntime-blasttime-700},qwe}
                 end
+        else
+                queue = {qww,{"wait",torndur[me:GetAbility(1).level]-1600},wee,{"wait",1450},qwe}
         end
 end
  
