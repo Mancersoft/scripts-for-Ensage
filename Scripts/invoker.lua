@@ -23,6 +23,7 @@ config:SetParameter("a7eee", "7")
 config:SetParameter("a8qee", "8")
 config:SetParameter("a9qqe", "9")
 config:SetParameter("a0qwe", "0")
+config:SetParameter("KeyForCastingOrbs", "space")
 config:SetParameter("Xcord", 50)
 config:SetParameter("Ycord", 30)
 config:Load()
@@ -52,6 +53,7 @@ end
 -- config
 x = config.Xcord
 y = config.Ycord
+KeyForCastingOrbs = numpad(config.KeyForCastingOrbs)
 combokey = {numpad(config.combo1),numpad(config.combo2),numpad(config.combo3),numpad(config.combo4),numpad(config.combo5),numpad(config.combo6),
 numpad(config.combo7),numpad(config.combo8)}
 -- 1 - TotalCombo: Tornado - EMP - Chaos Meteor - Deafening Blast - Cold Snap - Forge Spirit - Sun Strike - Ice Wall
@@ -666,7 +668,7 @@ function Key( msg, code )
         elseif code == combokey[6] then Keys[21] = (msg == KEY_DOWN)
         elseif code == combokey[7] then Keys[22] = (msg == KEY_DOWN)
         elseif code == combokey[8] then Keys[23] = (msg == KEY_DOWN)
-        elseif code == string.byte(" ") then Keys[15] = (msg == KEY_DOWN)      
+        elseif code == KeyForCastingOrbs then Keys[15] = (msg == KEY_DOWN)      
         elseif code == string.byte("Q") then Keys[16] = (msg == KEY_DOWN)      
         elseif code == string.byte("W") then Keys[17] = (msg == KEY_DOWN)      
         elseif code == string.byte("E") then Keys[18] = (msg == KEY_DOWN)
