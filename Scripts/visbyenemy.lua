@@ -6,11 +6,12 @@ require("libs.Utils")
 require("libs.ScriptConfig")
 
 config = ScriptConfig.new()
-config:SetParameter("Xcord", 254)
-config:SetParameter("Ycord", 5)
-config:SetParameter("Width", 59)
-config:SetParameter("Height", 32)
-config:SetParameter("Centwidth", 181)
+config:SetParameter("Xcord", 527)
+config:SetParameter("Ycord", 4)
+config:SetParameter("Width", 66)
+config:SetParameter("Height", 38)
+config:SetParameter("Centwidth", 205)
+config:SetParameter("Ping", false)
 config:Load()
 
 -- config
@@ -19,10 +20,12 @@ yy = config.Ycord -- y parameter of left-top corner of top bar heroes of your te
 ww = config.Width -- width of heroes icons.
 hh = config.Height -- height of heroes icons.
 centwidth = config.Centwidth -- distance between icons of heroes of different teams.
+ifping = config.Ping
 
 -- code
 sleeptick = 0
 panel = {}
+eff = {}
 init = false
 
 function Key(msg,code)
@@ -40,12 +43,6 @@ function Tick(tick)
 	if not init then
 		me = entityList:GetMyHero()
 		init = true
-	end
-	if not couriers or #couriers == 0 then
-		couriers = entityList:GetEntities({type=LuaEntity.TYPE_COURIER, team = me.team, alive=true})
-		if #couriers ~= 0 then
-			pos = couriers[1].position
-		end
 	end
 	local heroes = entityList:GetEntities({type=LuaEntity.TYPE_HERO, team = me.team, illusion = false})
 	for i,v in ipairs(heroes) do
@@ -70,8 +67,17 @@ function Tick(tick)
 			if panel[v.handle].outline then
 				panel[v.handle].color = 0x5050ff88
 				panel[v.handle].outline = false
+				if ifping then
+					client:Ping(Client.PING_NORMAL,v.position)
+				end
+			end
+			if not eff[v.handle] then
+				eff[v.handle] = Effect(v,"aura_shivas")
+				eff[v.handle]:SetVector(1,Vector(0,0,0))
 			end
 		elseif not panel[v.handle].outline then
+			eff = {}
+			collectgarbage("collect")
 			panel[v.handle].color = 0x5050ffff
 			panel[v.handle].outline = true
 		end
@@ -80,6 +86,7 @@ end
 
 function Close()
 	panel = {}
+	eff = {}
 	init = false
 	collectgarbage("collect")
 end
