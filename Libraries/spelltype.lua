@@ -51,7 +51,7 @@ list2 = {
 	beastmaster_primal_roar = { target = "target", number = 4 }, -- 5
 
 	bloodseeker_bloodrage = { target = "target", number = 1 }, -- 1
---	bloodseeker_blood_bath, -- 2
+	bloodseeker_blood_bath = { target = "area", number = 2 }, -- 2
 --	bloodseeker_thirst, -- 3
 	bloodseeker_rupture = { target = "target", number = 4 }, -- 4
 
@@ -147,7 +147,8 @@ list2 = {
 	earth_spirit_rolling_boulder = { target = "area", number = 2 }, -- 2
 	earth_spirit_geomagnetic_grip = { target = "target", number = 3 }, -- 3
 	earth_spirit_stone_caller = { target = "area", number = 5 }, -- 4
---	earth_spirit_magnetize, -- 5
+	earth_spirit_petrify = { target = "target", number = 6 }, -- 5
+--	earth_spirit_magnetize, -- 6
 
 	earthshaker_fissure = { target = "target", number = 1 }, -- 1
 --	earthshaker_enchant_totem, -- 2
@@ -368,9 +369,9 @@ list2 = {
 --	phantom_assassin_coup_de_grace, -- 4
 
 	phantom_lancer_spirit_lance = { target = "target", number = 1 }, -- 1
---	phantom_lancer_doppelwalk, -- 2
---	phantom_lancer_juxtapose, -- 3
---	phantom_lancer_phantom_edge, -- 4
+	phantom_lancer_doppelwalk = { target = "area", number = 2 }, -- 2
+--	phantom_lancer_phantom_edge, -- 3
+--	phantom_lancer_juxtapose, -- 4
 
 	phoenix_icarus_dive = { target = "area", number = 1 }, -- 1
 --	phoenix_fire_spirits, -- 2
@@ -409,9 +410,9 @@ list2 = {
 --	razor_eye_of_the_storm, -- 4
 
 	riki_smoke_screen = { target = "area", number = 1 }, -- 1
-	riki_blink_strike = { target = "target", number = 2 }, -- 2
+--	riki_permanent_invisibility, -- 2
 --	riki_backstab, -- 3
---	riki_permanent_invisibility, -- 4
+	riki_blink_strike = { target = "target", number = 4 }, -- 4
 
 	rubick_telekinesis = { target = "target", number = 1 }, -- 1
 	rubick_telekinesis_land = { target = "area", number = 1 }, -- 2
@@ -512,8 +513,17 @@ list2 = {
 --	shredder_whirling_death, -- 1
 	shredder_timber_chain = { target = "area", number = 2 }, -- 2
 --	shredder_reactive_armor, -- 3
-	shredder_chakram = { target = "area", number = 4 }, -- 4
---	shredder_return_chakram, -- 5
+	shredder_chakram_2 = { target = "area", number = 5 }, -- 4
+--	shredder_return_chakram_2, -- 5
+	shredder_chakram = { target = "area", number = 4 }, -- 6
+--	shredder_return_chakram, -- 7
+
+	techies_land_mines = { target = "area", number = 1 }, -- 1
+	techies_stasis_trap = { target = "area", number = 2 }, -- 2
+	techies_suicide = { target = "target", number = 3 }, -- 3
+	techies_focused_detonate = { target = "area", number = 5 }, -- 4
+	techies_minefield_sign = { target = "area", number = 6 }, -- 5
+	techies_remote_mines = { target = "area", number = 4 }, -- 6
 
 	tinker_laser = { target = "target", number = 1 }, -- 1
 --	tinker_heat_seeking_missile, -- 2
@@ -528,7 +538,8 @@ list2 = {
 	treant_natures_guise = { target = "target", number = 1 }, -- 1
 	treant_leech_seed = { target = "target", number = 2 }, -- 2
 	treant_living_armor = { target = "target", number = 3 }, -- 3
---	treant_overgrowth, -- 4
+--	treant_eyes_in_the_forest, -- 4
+--	treant_overgrowth, -- 5
 
 --	troll_warlord_berserkers_rage, -- 1
 	troll_warlord_whirling_axes_ranged = { target = "target", number = 2 }, -- 2
