@@ -34,9 +34,6 @@ function Tick(tick)
 			end
 		end
 		if check then
-			if me.classId == CDOTA_Unit_Hero_Disruptor then
-				disruptor = true
-			end
 			pretime,delay = math.modf(client.totalGameTime*10)
 			pretime = pretime+1
 			font = drawMgr:CreateFont("glimpsefont","Arial",fontsize,500)
@@ -64,11 +61,10 @@ function Tick(tick)
 		if not positions[v.handle] then
 			positions[v.handle] = {}
 			local nametexture = string.sub(v.name,15)
-			if disruptor then
-				positions[v.handle].glimpse = drawMgr:CreateRect(0,0,minisize,minisize,0x000000FF,drawMgr:GetTextureId("NyanUI/spellicons/disruptor_glimpse"))
-				positions[v.handle].glimpse.visible = false
-				positions[v.handle].icon = drawMgr:CreateRect(0,0,minisize,minisize,0x000000FF,drawMgr:GetTextureId("NyanUI/miniheroes/"..nametexture))
-				positions[v.handle].icon.visible = false
+			positions[v.handle].glimpse = drawMgr:CreateRect(0,0,minisize,minisize,0x000000FF,drawMgr:GetTextureId("NyanUI/spellicons/disruptor_glimpse"))
+			positions[v.handle].glimpse.visible = false
+			positions[v.handle].icon = drawMgr:CreateRect(0,0,minisize,minisize,0x000000FF,drawMgr:GetTextureId("NyanUI/miniheroes/"..nametexture))
+			positions[v.handle].icon.visible = false
 			end
 			positions[v.handle].npchandle = -1
 			positions[v.handle].bigicon = drawMgr:CreateRect(0,0,size,size,0x000000FF,drawMgr:GetTextureId("NyanUI/heroes_vertical/"..nametexture))
@@ -84,7 +80,7 @@ function Tick(tick)
 				positions[v.handle][count] = nil
 			end
 		end
-		if disruptor and not positions[v.handle].using then
+		if not positions[v.handle].using then
 			if positions[v.handle].lastpos then
 				q,positi = client:ScreenPosition(positions[v.handle].lastpos)
 				if q then
@@ -168,7 +164,6 @@ me = nil
 init = false
 unreg = false
 active = false
-disruptor = false
 positions = {}
 npces = {}
 count = 0
