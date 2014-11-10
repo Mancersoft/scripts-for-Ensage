@@ -65,7 +65,6 @@ function Tick(tick)
 			positions[v.handle].glimpse.visible = false
 			positions[v.handle].icon = drawMgr:CreateRect(0,0,minisize,minisize,0x000000FF,drawMgr:GetTextureId("NyanUI/miniheroes/"..nametexture))
 			positions[v.handle].icon.visible = false
-			end
 			positions[v.handle].npchandle = -1
 			positions[v.handle].bigicon = drawMgr:CreateRect(0,0,size,size,0x000000FF,drawMgr:GetTextureId("NyanUI/heroes_vertical/"..nametexture))
 			positions[v.handle].bigicon.visible = false
