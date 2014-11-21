@@ -44,8 +44,44 @@ function numpad( strkey )
                 elseif strkey == "n-" then return 109
                 elseif strkey == "n." then return 110
                 elseif strkey == "n/" then return 111
+                elseif strkey == "f1" then return 112
+                elseif strkey == "f2" then return 113
+                elseif strkey == "f3" then return 114
+                elseif strkey == "f4" then return 115
+                elseif strkey == "f5" then return 116
+                elseif strkey == "f6" then return 117
+                elseif strkey == "f7" then return 118
+                elseif strkey == "f8" then return 119
+                elseif strkey == "f9" then return 120
+                elseif strkey == "f10" then return 121
+                elseif strkey == "f11" then return 122
+                elseif strkey == "f12" then return 123
                 elseif strkey == "space" then return 32
                 elseif strkey == "alt" then return 18
+                elseif strkey == "backspace" then return 8
+                elseif strkey == "tab" then return 9
+                elseif strkey == "enter" then return 13
+                elseif strkey == "shift" then return 16
+                elseif strkey == "ctrl" then return 17
+                elseif strkey == "capslock" then return 20
+                elseif strkey == "esc" then return 27
+                elseif strkey == "insert" then return 45
+                elseif strkey == "pageup" then return 33
+                elseif strkey == "pagedown" then return 34
+                elseif strkey == "end" then return 35
+                elseif strkey == "home" then return 36
+                elseif strkey == "arrow_left" then return 37
+                elseif strkey == "arrow_up" then return 38
+                elseif strkey == "arrow_right" then return 39
+                elseif strkey == "arrow_down" then return 40
+                elseif strkey == "delete" then return 46
+                elseif strkey == "printscreen" then return 44
+                elseif strkey == "scrolllock" then return 145
+                elseif strkey == "pause" then return 19
+                elseif strkey == "numlock" then return 144
+                elseif strkey == "lwin" then return 91
+                elseif strkey == "rwin" then return 92
+                elseif strkey == "apps" then return 93
                 elseif string.len(strkey) > 2 or strkey == "" then return 124
                 else return string.byte( strkey )
         end
@@ -88,7 +124,7 @@ wallTick = 0
 prepWall = false
 prepTick = 0
 target = nil
-torndur = {0800,1100,1400,1700,2000,2300,2500}
+torndur = {800,1100,1400,1700,2000,2300,2500}
 empdelay = 2900
 meteordelay = 1300
 tornspeed = 1000
