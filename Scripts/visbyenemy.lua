@@ -28,13 +28,6 @@ panel = {}
 eff = {}
 init = false
 
-function Key(msg,code)
-	if client.console or client.chat or not init then return end
-	if msg == KEY_UP and code == hotkey then
-		activated = not activated
-	end
-end
-
 function Tick(tick)
 	if not client.connected or client.loading or client.console or tick <= sleeptick or not entityList:GetMyHero() then
 		return
@@ -91,6 +84,5 @@ function Close()
 	collectgarbage("collect")
 end
 
-script:RegisterEvent(EVENT_KEY,Key)
 script:RegisterEvent(EVENT_TICK,Tick)
 script:RegisterEvent(EVENT_CLOSE,Close)
