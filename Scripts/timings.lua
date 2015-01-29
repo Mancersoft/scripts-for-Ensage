@@ -80,6 +80,7 @@ modifnames = {
 "modifier_invoker_deafening_blast_disarm",
 "modifier_keeper_of_the_light_blinding_light",
 "modifier_life_stealer_rage",
+"modifier_earth_spirit_magnetize",
 "modifier_bloodseeker_rupture"
 },
 {
@@ -163,18 +164,16 @@ function regi(v,z)
 	end
 	if not timers[v.handle][z] then
 		timers[v.handle][z] = {}
-		local offset = v.healthbarOffset+height
-		timers[v.handle][z].time = drawMgr:CreateText(0,0,-1,"",font)
-		timers[v.handle][z].texture = drawMgr:CreateRect(0,0,imagesize,imagesize,0x000000FF)
+		timers[v.handle][z].time = drawMgr:CreateText(0,(imagesize+verticaldistance)*z+height,-1,"",font)
+		timers[v.handle][z].texture = drawMgr:CreateRect(-1*(imagesize+distance),(imagesize+verticaldistance)*z+height,imagesize,imagesize,0x000000FF)
 		timers[v.handle][z].time.entity = v
 		timers[v.handle][z].texture.entity = v
-		timers[v.handle][z].time.entityPosition = Vector(0, (imagesize+verticaldistance)*z-1, offset)
-		timers[v.handle][z].texture.entityPosition = Vector(-1*(imagesize+distance), (imagesize+verticaldistance)*z-1, offset)
+		timers[v.handle][z].time.entityPosition = Vector(0,0,v.healthbarOffset)
+		timers[v.handle][z].texture.entityPosition = Vector(0,0,v.healthbarOffset)
 	end
 end
 
 function prepare(v,z,modif)
-	timers[v.handle][z].time.visible = true
 	if string.sub(modif.texture,1,5) ~= "item_" then
 		timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/spellicons/"..modif.texture)
 	else
@@ -189,7 +188,6 @@ function prepare(v,z,modif)
 			timers[v.handle][z].texture.textureId = drawMgr:GetTextureId("NyanUI/modifiers/"..string.sub(modif.texture,6))
 		end
 	end
-	timers[v.handle][z].texture.visible = true
 end
 
 function findmodifs(entity,handle,name)
@@ -256,7 +254,9 @@ function Tick(tick)
 		end
 		if entityList:GetEntity(t[2]) then
 			if not stop[t[2]][t[5]] then
-				if timers[t[2]][t[5]].time.visible then
+				if timers[t[2]][t[5]].time then
+					timers[t[2]][t[5]].time.visible = true
+					timers[t[2]][t[5]].texture.visible = true
 					if findmodifs(t[1],t[3],t[7]) then
 						if t[4].name ~= "modifier_enigma_black_hole_thinker" and t[4].name ~= "modifier_cold_feet" then
 							if t[4].name ~= "modifier_alchemist_unstable_concoction" then
