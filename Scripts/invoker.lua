@@ -202,7 +202,7 @@ end
  
 -- Chaos Meteor - Deafening Blast
 function MeteorBlastCombo( )
-        queue = {wee,{"wait",1450},qwe}
+        queue = {wee,{"wait",700},qwe}
 end
  
 -- Cold Snap - Forge Spirit - Alacrity
@@ -212,7 +212,16 @@ end
  
 -- Eul - Sun Strike - Chaos Meteor - Deafening Blast
 function EulSSMeteorBlast( )
-        queue = {{"item_unit","item_cyclone"},{"wait",800},eee,{"wait",400},wee,{"wait",1000},qwe}
+        if target then
+            local me = entityList:GetMyHero()
+            local cyclone = me:FindItem("item_cyclone")
+            if cyclone and cyclone:CanBeCasted() then
+                me:CastAbility(cyclone, target)
+                return
+			end
+		else
+			 queue = {{"item_unit","item_cyclone"},{"wait",1000},eee,{"wait",400},wee,qwe}
+        end		
 end
  
 -- Tornado - EMP - Chaos Meteor - Deafening Blast
@@ -439,6 +448,24 @@ function Tick( tick )
                 end
                         text.text = hkey
         end
+		if target~= nil and me then
+		    local cycloneModif = target:FindModifier("modifier_eul_cyclone")
+		    if cycloneModif then
+		        if cycloneModif.remainingTime < 1.80 then 
+                    queue = {eee} 
+			    end
+		    end
+		    if cycloneModif then
+		        if cycloneModif.remainingTime < 1.3 then 
+                    queue = {wee} 
+			    end
+		    end
+            if cycloneModif then
+		        if cycloneModif.remainingTime < 0.6 then 
+                    queue = {qwe} --I'm not much of scripter per say, so this might seem odd the way I separated it, but it works much better.
+			    end
+		    end
+	    end			
 end
  
 --Invokes the input combination
