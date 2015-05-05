@@ -41,26 +41,46 @@ function Key(msg,code)
 		mp = entityList:GetMyPlayer()
 		return
 	end
-	if msg == KEY_UP then
-		if mp.selection and mp.selection[1] and mp.selection[1].handle == entityList:GetMyHero().handle then
-			if code == aggro then
-				local enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false,visible=true,team=(5-mp.team)})
-				if enemies and #enemies == 0 then
-					enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false,visible=false,team=(5-mp.team)})
-				end
-				NextAction(enemies[1],false)
-			elseif code == unaggro then
-				local allycreeps = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Lane,team=mp.team})
-				NextAction(allycreeps[1],true)
+	if msg == KEY_UP and mp.selection and mp.selection[1] and mp.selection[1].handle == entityList:GetMyHero().handle 
+	and sleeptick+200 < GetTick() then
+		if code == aggro then
+			local enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false,visible=true,team=(5-mp.team)})
+			if not enemies or not enemies[1] then
+				enemies = entityList:FindEntities({type=LuaEntity.TYPE_HERO,illusion=false,visible=false,team=(5-mp.team)})
 			end
+			if not enemies or not enemies[1] then
+				return
+			end
+			prev = {mp.orderId,mp.orderPosition,mp.target,mp.source}
+			mp:Attack(enemies[1])
+			unag = false
+			script:RegisterEvent(EVENT_TICK,Tick)
+			sleeptick = GetTick()+5
+		elseif code == unaggro then
+			local allycreeps = entityList:FindEntities({classId=CDOTA_BaseNPC_Creep_Lane,team=mp.team,alive=true})
+			if not allycreeps or not allycreeps[1] then
+				return
+			end
+			prev = {mp.orderId,mp.orderPosition,mp.target,mp.source}
+			mp:Attack(allycreeps[1])
+			unag = true
+			script:RegisterEvent(EVENT_TICK,Tick)
+			sleeptick = GetTick()+5
 		end
 	end
 end
 
-function NextAction(target,unag)
-	if not target then return end
-	prev = {mp.orderId,mp.orderPosition,mp.target,mp.source}
-	mp:Attack(target)
+function Tick(tick)
+	if sleeptick < tick then
+		NextAction()
+		script:UnregisterEvent(Tick)
+	end
+end
+
+function NextAction()
+	if prev == {} then
+		return
+	end
 	if prev[1] == Player.ORDER_MOVETOPOSITION then
 		mp:Move(prev[2])
 	elseif prev[1] == Player.ORDER_MOVETOENTITY then
@@ -89,6 +109,9 @@ end
 function Load()
 	if registered then return end
 	mp = nil
+	sleeptick = 0
+	prev = {}
+	unag = false
 	script:RegisterEvent(EVENT_KEY,Key)
 	registered = true
 end
