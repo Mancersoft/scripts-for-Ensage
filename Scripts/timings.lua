@@ -81,6 +81,10 @@ modifnames = {
 "modifier_keeper_of_the_light_blinding_light",
 "modifier_life_stealer_rage",
 "modifier_earth_spirit_magnetize",
+"modifier_winter_wyvern_cold_embrace",
+"modifier_item_lotus_orb_active",
+"modifier_item_glimmer_cape_fade",
+"modifier_item_silver_edge_windwalk",
 "modifier_bloodseeker_rupture"
 },
 {
@@ -143,6 +147,8 @@ modifnames = {
 "modifier_rattletrap_cog_push",
 "modifier_shadow_demon_disruption",
 "modifier_dark_troll_warlord_ensnare",
+"modifier_winter_wyvern_winters_curse",
+"modifier_winter_wyvern_winters_curse_aura",
 "modifier_stunned"
 },
 {
